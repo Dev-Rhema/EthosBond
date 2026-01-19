@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 export default function PairButtons({ onPair, onSkip, disabled }) {
   return (
@@ -10,9 +10,9 @@ export default function PairButtons({ onPair, onSkip, disabled }) {
         onClick={onSkip}
         disabled={disabled}
         className={`w-16 h-16 rounded-full bg-white flex items-center justify-center text-3xl shadow-lg transition ${
-          disabled 
-            ? 'opacity-50 cursor-not-allowed' 
-            : 'hover:bg-gray-100 cursor-pointer'
+          disabled
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-gray-100 cursor-pointer"
         }`}
         title="Skip"
       >
@@ -26,9 +26,9 @@ export default function PairButtons({ onPair, onSkip, disabled }) {
         onClick={onPair}
         disabled={disabled}
         className={`w-16 h-16 rounded-full bg-gradient-to-r from-blue-700 to-blue-900 flex items-center justify-center text-3xl text-white shadow-xl transition ${
-          disabled 
-            ? 'opacity-50 cursor-not-allowed' 
-            : 'hover:from-blue-800 hover:to-gray-900 cursor-pointer'
+          disabled
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:from-blue-800 hover:to-gray-900 cursor-pointer"
         }`}
         title="Send Pair Request"
       >
