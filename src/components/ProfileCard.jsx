@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Star, Target, MapPin, Globe } from "lucide-react";
 
 export default function ProfileCard({ profile }) {
   if (!profile) {
@@ -51,7 +52,7 @@ export default function ProfileCard({ profile }) {
 
   return (
     <motion.div
-      className="bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-md"
+      className="bg-slate-800 rounded-2xl shadow-2xl p-6 w-full max-w-md border border-slate-700"
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
     >
@@ -60,23 +61,24 @@ export default function ProfileCard({ profile }) {
         <img
           src={profile.profilePicture || "/default-avatar.png"}
           alt={displayName}
-          className="w-32 h-32 rounded-full object-cover border-4 border-gray-600 shadow-lg"
+          className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-cyan-500 shadow-xl"
         />
       </div>
 
       {/* Basic Info */}
-      <div className="text-center mb-2">
-        <h2 className="text-2xl font-bold text-gray-100">{displayName}</h2>
-        {username && <p className="text-sm text-gray-400 mt-1">@{username}</p>}
+      <div className="text-center mb-3">
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-100">{displayName}</h2>
+        {username && <p className="text-sm text-slate-400 mt-1">@{username}</p>}
       </div>
 
       {/* Ethos Score & Trust Level */}
       <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
-        <span className="px-3 py-1 bg-gray-700 text-gray-200 rounded-full text-sm font-medium">
-          ⭐ Ethos Score: {ethosScore}
+        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 text-slate-200 rounded-full text-sm font-medium">
+          <Star className="w-4 h-4 text-yellow-400" />
+          {ethosScore}
         </span>
         <span
-          className={`px-3 py-1 rounded-full text-sm font-medium border-2 ${colorClass}`}
+          className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 ${colorClass}`}
         >
           {trustLevel.charAt(0).toUpperCase() + trustLevel.slice(1)}
         </span>
@@ -85,8 +87,9 @@ export default function ProfileCard({ profile }) {
       {/* XP Display (if available) */}
       {xpTotal > 0 && (
         <div className="flex justify-center mb-4">
-          <span className="px-3 py-1 bg-gray-700 text-gray-200 rounded-full text-sm font-medium">
-            🎯 XP: {xpTotal.toLocaleString()}
+          <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 text-slate-200 rounded-full text-sm font-medium">
+            <Target className="w-4 h-4 text-cyan-400" />
+            {xpTotal.toLocaleString()} XP
           </span>
         </div>
       )}
@@ -94,29 +97,29 @@ export default function ProfileCard({ profile }) {
       {/* Description */}
       {description && (
         <div className="mb-4 text-center">
-          <p className="text-sm text-gray-300 line-clamp-3">{description}</p>
+          <p className="text-sm text-slate-300 line-clamp-3">{description}</p>
         </div>
       )}
 
       {/* Address (shortened) */}
       <div className="text-center mb-4">
-        <p className="text-xs text-gray-500 font-mono">
+        <p className="text-xs text-slate-500 font-mono">
           {profile.address.slice(0, 6)}...{profile.address.slice(-4)}
         </p>
       </div>
 
       {/* Legacy fields (Location, Nationality, Interests) - only show if available */}
       {(profile.location || profile.nationality) && (
-        <div className="flex justify-center gap-4 mb-4 text-gray-300 text-sm">
+        <div className="flex justify-center gap-4 mb-4 text-slate-300 text-sm">
           {profile.location && (
-            <span className="flex items-center gap-1">
-              <span>📍</span>
+            <span className="flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-cyan-400" />
               <span>{profile.location}</span>
             </span>
           )}
           {profile.nationality && (
-            <span className="flex items-center gap-1">
-              <span>🌍</span>
+            <span className="flex items-center gap-1.5">
+              <Globe className="w-4 h-4 text-cyan-400" />
               <span>{profile.nationality}</span>
             </span>
           )}
@@ -126,14 +129,14 @@ export default function ProfileCard({ profile }) {
       {/* Interests - only show if available */}
       {profile.interests && profile.interests.length > 0 && (
         <div className="mb-4">
-          <h3 className="font-semibold text-gray-200 mb-3 text-center">
+          <h3 className="font-semibold text-slate-200 mb-3 text-center text-sm">
             Interests
           </h3>
           <div className="flex flex-wrap gap-2 justify-center">
             {profile.interests.map((interest, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1 bg-gradient-to-r from-gray-700 to-gray-600 text-gray-200 rounded-full text-sm"
+                className="px-3 py-1 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-200 rounded-full text-xs sm:text-sm border border-slate-600"
               >
                 {interest}
               </span>

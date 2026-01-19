@@ -227,90 +227,121 @@ export default function OnboardingFlow({ onComplete }) {
   const filteredInterestList = filterInterests(interestSearch);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-3 sm:p-4 md:p-6 lg:p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        transition={{ duration: 0.5 }}
+        className="bg-slate-800 border border-slate-700 rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
       >
-        <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-gray-300 to-gray-400 bg-clip-text text-transparent">
-          Welcome to Ethos Pair
-        </h1>
-        <p className="text-gray-300 text-center mb-8">
-          Reputation-based discovery
-        </p>
+        <div className="mb-6 sm:mb-8 md:mb-10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3 text-center bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            Welcome to Ethos Bond
+          </h1>
+          <p className="text-slate-400 text-center text-xs sm:text-sm md:text-base">
+            Build meaningful connections through reputation
+          </p>
+        </div>
+
+        {/* Progress indicator */}
+        <div className="mb-6 sm:mb-8 flex gap-2">
+          {[1, 2].map((stepNum) => (
+            <div
+              key={stepNum}
+              className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                stepNum <= step ? "bg-gradient-to-r from-blue-500 to-cyan-500" : "bg-slate-700"
+              }`}
+            />
+          ))}
+        </div>
 
         {/* Step 1: Ethos Address */}
         {step === 1 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h2 className="text-xl font-semibold mb-4 text-gray-200">
-              Step 1: Enter Your Ethos Address
-            </h2>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Ethos Address (Ethereum)
-              </label>
-              <input
-                type="text"
-                placeholder="0x..."
-                value={formData.ethosAddress}
-                onChange={(e) =>
-                  setFormData({ ...formData, ethosAddress: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+            <div className="mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-1 sm:mb-2 text-white">
+                Step 1 of 2
+              </h2>
+              <p className="text-slate-400 text-xs sm:text-sm">Connect your Ethos address to get started</p>
             </div>
 
-            <button
-              onClick={handleEthosSubmit}
-              disabled={loading || !formData.ethosAddress}
-              className="w-full px-4 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:from-purple-600 hover:to-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Loading..." : "Continue"}
-            </button>
+            <div className="space-y-4 sm:space-y-5 md:space-y-6">
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
+                  Ethos Address
+                </label>
+                <input
+                  type="text"
+                  placeholder="0x..."
+                  value={formData.ethosAddress}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ethosAddress: e.target.value })
+                  }
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base"
+                />
+                <p className="text-xs text-slate-500 mt-1.5 sm:mt-2">Enter your Ethereum wallet address</p>
+              </div>
+
+              {error && (
+                <div className="p-3 sm:p-4 bg-red-900/20 border border-red-800 rounded-lg sm:rounded-xl">
+                  <p className="text-red-400 text-xs sm:text-sm">{error}</p>
+                </div>
+              )}
+
+              <button
+                onClick={handleEthosSubmit}
+                disabled={loading || !formData.ethosAddress}
+                className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold rounded-lg sm:rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-cyan-500/50 text-sm sm:text-base"
+              >
+                {loading ? "Connecting..." : "Continue"}
+              </button>
+            </div>
           </motion.div>
         )}
 
         {/* Step 2: Profile Details */}
         {step === 2 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h2 className="text-xl font-semibold mb-4">
-              Step 2: Complete Your Profile
-            </h2>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+            <div className="mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-1 sm:mb-2 text-white">
+                Step 2 of 2
+              </h2>
+              <p className="text-slate-400 text-xs sm:text-sm">Complete your profile to get started</p>
+            </div>
 
-            {/* Preview */}
-            <div className="flex flex-col items-center mb-6">
+            {/* Profile Preview */}
+            <div className="bg-gradient-to-r from-slate-700 to-slate-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 text-center border border-slate-600">
               <img
                 src={formData.profilePicture}
                 alt="Profile"
-                className="w-24 h-24 rounded-full border-4 border-blue-700 mb-2"
+                className="w-20 sm:w-24 md:w-28 h-20 sm:h-24 md:h-28 rounded-full border-4 border-cyan-500 mx-auto mb-3 sm:mb-4 object-cover shadow-lg"
               />
-              <span className="text-sm text-gray-600">
-                ⭐ Ethos Score: {formData.ethosScore}
-              </span>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2">{formData.name || "Your Name"}</h3>
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-cyan-400 text-base sm:text-lg">★</span>
+                <span className="text-slate-300 text-xs sm:text-sm">Ethos Score: <span className="font-bold text-cyan-400">{formData.ethosScore}</span></span>
+              </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-5 md:space-y-6">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Name *
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
+                  Full Name <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="Your name"
                   value={formData.name}
                   onChange={(e) => handleFieldChange("name", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base"
                 />
               </div>
 
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Location *
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
+                  Location <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -319,15 +350,15 @@ export default function OnboardingFlow({ onComplete }) {
                   onChange={(e) =>
                     handleFieldChange("location", e.target.value)
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base"
                 />
               </div>
 
               {/* Continent & Nationality */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                 {/* Continent */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
                     Continent
                   </label>
                   <div className="relative">
@@ -338,19 +369,19 @@ export default function OnboardingFlow({ onComplete }) {
                       onChange={(e) =>
                         handleFieldChange("continent", e.target.value)
                       }
-                      className={`w-full px-4 py-2 border rounded-lg bg-gray-700 text-gray-200 focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400 ${
-                        errors.continent ? "border-red-500" : "border-gray-600"
+                      className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg sm:rounded-xl bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition placeholder-slate-500 text-sm sm:text-base ${
+                        errors.continent ? "border-red-500" : "border-slate-600"
                       }`}
                     />
                     {suggestions.continent.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+                      <div className="absolute z-10 w-full mt-2 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl shadow-lg max-h-40 overflow-y-auto">
                         {suggestions.continent.map((suggestion, idx) => (
                           <button
                             key={idx}
                             onClick={() =>
                               selectSuggestion("continent", suggestion)
                             }
-                            className="w-full text-left px-4 py-2 hover:bg-gray-600 transition text-sm text-gray-200"
+                            className="w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 hover:bg-slate-600 transition text-xs sm:text-sm text-slate-200"
                           >
                             {suggestion}
                           </button>
@@ -359,7 +390,7 @@ export default function OnboardingFlow({ onComplete }) {
                     )}
                   </div>
                   {errors.continent && (
-                    <p className="text-red-400 text-xs mt-1">
+                    <p className="text-red-400 text-xs mt-1.5 sm:mt-2">
                       {errors.continent}
                     </p>
                   )}
@@ -367,10 +398,10 @@ export default function OnboardingFlow({ onComplete }) {
 
                 {/* Nationality */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
                     Nationality
                     {!formData.continent && (
-                      <span className="text-xs text-gray-400 ml-2">
+                      <span className="text-xs text-slate-500 ml-1 sm:ml-2">
                         (Select continent first)
                       </span>
                     )}
@@ -391,21 +422,21 @@ export default function OnboardingFlow({ onComplete }) {
                         !formData.continent ||
                         !isValidContinent(formData.continent)
                       }
-                      className={`w-full px-4 py-2 border rounded-lg bg-gray-700 text-gray-200 focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400 ${
+                      className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg sm:rounded-xl bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition placeholder-slate-500 text-sm sm:text-base ${
                         errors.nationality
                           ? "border-red-500"
-                          : "border-gray-600"
-                      } ${!formData.continent || !isValidContinent(formData.continent) ? "bg-gray-900 cursor-not-allowed" : ""}`}
+                          : "border-slate-600"
+                      } ${!formData.continent || !isValidContinent(formData.continent) ? "bg-slate-800 cursor-not-allowed opacity-50" : ""}`}
                     />
                     {suggestions.nationality.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+                      <div className="absolute z-10 w-full mt-2 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl shadow-lg max-h-40 overflow-y-auto">
                         {suggestions.nationality.map((suggestion, idx) => (
                           <button
                             key={idx}
                             onClick={() =>
                               selectSuggestion("nationality", suggestion)
                             }
-                            className="w-full text-left px-4 py-2 hover:bg-gray-600 transition text-sm text-gray-200"
+                            className="w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 hover:bg-slate-600 transition text-xs sm:text-sm text-slate-200"
                           >
                             {suggestion}
                           </button>
@@ -414,7 +445,7 @@ export default function OnboardingFlow({ onComplete }) {
                     )}
                   </div>
                   {errors.nationality && (
-                    <p className="text-red-400 text-xs mt-1">
+                    <p className="text-red-400 text-xs mt-1.5 sm:mt-2">
                       {errors.nationality}
                     </p>
                   )}
@@ -423,32 +454,32 @@ export default function OnboardingFlow({ onComplete }) {
 
               {/* What are you looking for? */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  What are you looking for? * (Select all that apply)
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">
+                  What are you looking for? <span className="text-red-400">*</span> (Select all that apply)
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   {RELATIONSHIP_TYPES.map((type) => (
                     <button
                       key={type.id}
                       onClick={() => toggleLookingFor(type.id)}
-                      className={`p-3 rounded-lg border-2 transition text-left ${
+                      className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition text-left ${
                         formData.lookingFor.includes(type.id)
-                          ? "border-blue-700 bg-blue-50"
-                          : "border-gray-200 hover:border-blue-500"
+                          ? "border-cyan-500 bg-slate-700/50"
+                          : "border-slate-600 hover:border-cyan-500/50 bg-slate-700/20"
                       }`}
                     >
-                      <div className="flex items-start gap-2">
-                        <span className="text-xl">{type.icon}</span>
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <span className="text-lg">{type.icon}</span>
                         <div className="flex-1">
-                          <div className="font-semibold text-gray-800 text-sm">
+                          <div className="font-semibold text-white text-xs sm:text-sm">
                             {type.label}
                           </div>
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-slate-400 mt-1">
                             {type.description}
                           </div>
                         </div>
                         {formData.lookingFor.includes(type.id) && (
-                          <span className="text-blue-700">✓</span>
+                          <span className="text-cyan-400">✓</span>
                         )}
                       </div>
                     </button>
@@ -458,22 +489,22 @@ export default function OnboardingFlow({ onComplete }) {
 
               {/* Interests */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Interests * (Select all that apply)
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">
+                  Interests <span className="text-red-400">*</span> (Select all that apply)
                 </label>
 
                 {/* Search interests */}
-                <div className="relative mb-3">
+                <div className="relative mb-3 sm:mb-4">
                   <input
                     type="text"
                     placeholder="Search interests..."
                     value={interestSearch}
                     onChange={(e) => setInterestSearch(e.target.value)}
                     onFocus={() => setShowInterestDropdown(true)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base"
                   />
                   {showInterestDropdown && interestSearch.length >= 1 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-2 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl shadow-lg max-h-48 overflow-y-auto">
                       {filteredInterestList.map((interest, idx) => (
                         <button
                           key={idx}
@@ -482,10 +513,10 @@ export default function OnboardingFlow({ onComplete }) {
                             setInterestSearch("");
                             setShowInterestDropdown(false);
                           }}
-                          className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition text-sm ${
+                          className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 hover:bg-slate-600 transition text-xs sm:text-sm ${
                             formData.interests.includes(interest)
-                              ? "bg-gray-200 text-gray-900 font-medium"
-                              : ""
+                              ? "bg-slate-600 text-cyan-300 font-medium"
+                              : "text-slate-200"
                           }`}
                         >
                           {interest}{" "}
@@ -498,17 +529,17 @@ export default function OnboardingFlow({ onComplete }) {
 
                 {/* Selected interests */}
                 {formData.interests.length > 0 && (
-                  <div className="mb-3">
+                  <div className="mb-3 sm:mb-4">
                     <div className="flex flex-wrap gap-2">
                       {formData.interests.map((interest, idx) => (
                         <span
                           key={idx}
-                          className="px-3 py-1 bg-gray-300 text-gray-900 rounded-full text-sm flex items-center gap-2"
+                          className="px-2 sm:px-3 py-1 sm:py-1.5 bg-slate-700 text-cyan-400 rounded-full text-xs sm:text-sm flex items-center gap-1 sm:gap-2 border border-slate-600"
                         >
                           {interest}
                           <button
                             onClick={() => toggleInterest(interest)}
-                            className="hover:text-gray-700"
+                            className="hover:text-cyan-300"
                           >
                             ✕
                           </button>
@@ -524,10 +555,10 @@ export default function OnboardingFlow({ onComplete }) {
                     <button
                       key={idx}
                       onClick={() => toggleInterest(interest)}
-                      className={`px-3 py-1 rounded-full text-sm transition ${
+                      className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition ${
                         formData.interests.includes(interest)
-                          ? "bg-gradient-to-r from-blue-700 to-blue-900 text-white"
-                          : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+                          ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white"
+                          : "bg-slate-700 text-slate-300 hover:bg-slate-600 border border-slate-600"
                       }`}
                     >
                       {interest}
@@ -537,13 +568,18 @@ export default function OnboardingFlow({ onComplete }) {
               </div>
             </div>
 
-            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+            {error && (
+              <div className="p-3 sm:p-4 bg-red-900/20 border border-red-800 rounded-lg sm:rounded-xl mt-6">
+                <p className="text-red-400 text-xs sm:text-sm">{error}</p>
+              </div>
+            )}
 
             <button
               onClick={handleProfileSubmit}
-              className="w-full px-4 py-3 bg-gradient-to-r from-blue-700 to-blue-900 text-white rounded-lg hover:from-blue-800 hover:to-gray-900 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading}
+              className="w-full mt-6 sm:mt-8 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold rounded-lg sm:rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-cyan-500/50 text-sm sm:text-base"
             >
-              Complete Profile
+              {loading ? "Creating Profile..." : "Complete Profile"}
             </button>
           </motion.div>
         )}

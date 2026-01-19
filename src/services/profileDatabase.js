@@ -1,5 +1,5 @@
 // Profile Database Service - Uses Supabase for cloud storage
-import { supabase } from "./supabaseClient";
+import { supabase } from "../lib/supabase";
 
 class ProfileDatabase {
   constructor() {

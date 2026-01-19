@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Search, Users, Settings, Bell, User as UserIcon } from "lucide-react";
 import OnboardingFlow from "./components/OnboardingFlow";
 import ProfileCarousel from "./components/ProfileCarousel";
-import ActivePairsList from "./components/ActivePairsList";
-import PastPairsList from "./components/PastPairsList";
+import ActiveBondsList from "./components/ActiveBondsList";
+import PastBondsList from "./components/PastBondsList";
 import Chat from "./components/Chat";
 import ProfileView from "./components/ProfileView";
 import UserProfile from "./components/UserProfile";
 import FilterPanel from "./components/FilterPanel";
 import ConfirmationModal from "./components/ConfirmationModal";
-import PairRequestNotifications from "./components/PairRequestNotifications";
-import usePairing from "./hooks/usePairing";
+import NotificationsPanel from "./components/NotificationsPanel";
+import useBonding from "./hooks/useBonding";
 import { profileDB } from "./services/profileDatabase";
 import { messageService } from "./services/messageService";
 import "./index.css";
@@ -18,17 +19,19 @@ import "./index.css";
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
-  const [currentView, setCurrentView] = useState("discover"); // discover, pairs
+  const [currentView, setCurrentView] = useState("discover"); // discover, bonds
   const [showFilters, setShowFilters] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [selectedPair, setSelectedPair] = useState(null);
+  const [selectedBond, setSelectedBond] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [newMessageNotification, setNewMessageNotification] = useState(null);
-  const [unpairConfirmation, setUnpairConfirmation] = useState(null);
+  const [bondRequestNotification, setBondRequestNotification] = useState(null);
+  const [unbondConfirmation, setUnbondConfirmation] = useState(null);
+  const [messageNotifications, setMessageNotifications] = useState([]);
   const [filters, setFilters] = useState({
     interests: [],
     location: "",
@@ -36,14 +39,14 @@ function App() {
   });
 
   const {
-    activePairs,
-    pastPairs,
+    activeBonds,
+    pastBonds,
     receivedRequests,
-    sendPairRequest,
-    acceptPairRequest,
-    declinePairRequest,
-    unpair,
-  } = usePairing(currentUser?.address);
+    sendBondRequest,
+    acceptBondRequest,
+    declineBondRequest,
+    unbond,
+  } = useBonding(currentUser?.address);
 
   // Restore session on mount
   useEffect(() => {
@@ -71,20 +74,33 @@ function App() {
 
     const unsubscribe = messageService.subscribeToUserMessages(
       currentUser.address,
-      (newMessage) => {
-        // Show notification for new message
+      async (newMessage) => {
+        // Get sender profile info
+        const senderProfile = await profileDB.getProfileByAddress(newMessage.sender_address);
+
+        // Add to message notifications list
+        const notification = {
+          id: `msg-${Date.now()}`,
+          bondId: newMessage.pair_id,
+          senderAddress: newMessage.sender_address,
+          senderProfile: senderProfile,
+          message: newMessage.message,
+          timestamp: new Date().toISOString(),
+        };
+
+        setMessageNotifications((prev) => [notification, ...prev]);
+
+        // Show toast notification for new message
         setNewMessageNotification({
-          pairId: newMessage.pair_id,
+          bondId: newMessage.pair_id,
           senderAddress: newMessage.sender_address,
           message: newMessage.message,
         });
 
-        // Auto-hide notification after 5 seconds
-        const timeout = setTimeout(() => {
+        // Auto-hide toast after 5 seconds
+        setTimeout(() => {
           setNewMessageNotification(null);
         }, 5000);
-
-        return () => clearTimeout(timeout);
       },
     );
 
@@ -98,14 +114,23 @@ function App() {
     setCurrentView("discover");
   };
 
-  const handlePairRequest = (profile) => {
-    sendPairRequest(profile);
-    // Show success notification (could add toast here)
-    console.log("Pair request sent to:", profile.name);
+  const handleBondRequest = (profile) => {
+    sendBondRequest(profile);
+
+    // Show success notification toast
+    setBondRequestNotification({
+      name: profile.displayName || profile.name,
+      message: "Bond request sent successfully!"
+    });
+
+    // Auto-hide notification after 3 seconds
+    setTimeout(() => {
+      setBondRequestNotification(null);
+    }, 3000);
   };
 
-  const handleOpenChat = (pair) => {
-    setSelectedPair(pair);
+  const handleOpenChat = (bond) => {
+    setSelectedBond(bond);
     setShowChat(true);
   };
 
@@ -114,23 +139,23 @@ function App() {
     setShowProfile(true);
   };
 
-  const handleUnpair = (pair) => {
-    setUnpairConfirmation(pair);
+  const handleUnbond = (bond) => {
+    setUnbondConfirmation(bond);
   };
 
-  const confirmUnpair = async () => {
-    if (unpairConfirmation) {
-      unpair(unpairConfirmation.id);
-      setUnpairConfirmation(null);
+  const confirmUnbond = async () => {
+    if (unbondConfirmation) {
+      unbond(unbondConfirmation.id);
+      setUnbondConfirmation(null);
     }
   };
 
   const handleAcceptRequest = (requestId) => {
-    acceptPairRequest(requestId);
+    acceptBondRequest(requestId);
   };
 
   const handleDeclineRequest = (requestId) => {
-    declinePairRequest(requestId);
+    declineBondRequest(requestId);
   };
 
   const handleLogout = () => {
@@ -151,6 +176,32 @@ function App() {
     }
   };
 
+  const handleClickBondRequest = (request) => {
+    // Close notifications panel
+    setShowNotifications(false);
+    // Navigate to bonds page
+    setCurrentView("bonds");
+  };
+
+  const handleClickMessage = (messageNotif) => {
+    // Find the bond for this message
+    const bond = activeBonds.find(
+      (b) =>
+        b.profile.address.toLowerCase() === messageNotif.senderAddress.toLowerCase()
+    );
+
+    if (bond) {
+      // Close notifications panel
+      setShowNotifications(false);
+      // Navigate to bonds page
+      setCurrentView("bonds");
+      // Open chat with this bond
+      setTimeout(() => {
+        handleOpenChat(bond);
+      }, 100);
+    }
+  };
+
   // Show loading while checking for saved session
   if (isLoadingSession) {
     return (
@@ -166,65 +217,73 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="bg-gray-800 shadow-lg sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-20 md:pb-0">
+      {/* Top Navigation - Desktop and Logo for Mobile */}
+      <nav className="bg-slate-800/90 backdrop-blur-md shadow-xl sticky top-0 z-40 border-b border-slate-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-300 to-gray-400 bg-clip-text text-transparent">
-              Ethos Pair
+            {/* Logo */}
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              Ethos Bond
             </h1>
 
-            <div className="flex gap-4 items-center">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex gap-2 lg:gap-3 items-center">
               <button
                 onClick={() => setCurrentView("discover")}
-                className={`px-4 py-2 rounded-lg transition ${
+                className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition-all ${
                   currentView === "discover"
-                    ? "bg-gradient-to-r from-gray-600 to-gray-700 text-white"
-                    : "text-gray-300 hover:bg-gray-700"
+                    ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg"
+                    : "text-slate-300 hover:bg-slate-700"
                 }`}
               >
-                🔍 Discover
+                <Search className="w-4 h-4" />
+                <span className="hidden lg:inline">Discover</span>
               </button>
               <button
-                onClick={() => setCurrentView("pairs")}
-                className={`px-4 py-2 rounded-lg transition ${
-                  currentView === "pairs"
-                    ? "bg-gradient-to-r from-gray-600 to-gray-700 text-white"
-                    : "text-gray-300 hover:bg-gray-700"
+                onClick={() => setCurrentView("bonds")}
+                className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition-all relative ${
+                  currentView === "bonds"
+                    ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg"
+                    : "text-slate-300 hover:bg-slate-700"
                 }`}
               >
-                👥 Pairs ({activePairs.length})
+                <Users className="w-4 h-4" />
+                <span className="hidden lg:inline">Bonds</span>
+                {activeBonds.length > 0 && (
+                  <span className="ml-1 px-2 py-0.5 bg-cyan-500 text-white text-xs rounded-full font-bold">
+                    {activeBonds.length}
+                  </span>
+                )}
               </button>
               {currentView === "discover" && (
                 <button
                   onClick={() => setShowFilters(true)}
-                  className="px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition"
+                  className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-slate-700 text-slate-200 rounded-lg hover:bg-slate-600 transition-all"
                 >
-                  🔧 Filters
+                  <Settings className="w-4 h-4" />
+                  <span className="hidden lg:inline">Filters</span>
                 </button>
               )}
-              {/* Notification Bell */}
               <button
                 onClick={() => setShowNotifications(true)}
-                className="relative px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition"
+                className="relative flex items-center gap-2 px-3 lg:px-4 py-2 bg-slate-700 text-slate-200 rounded-lg hover:bg-slate-600 transition-all"
               >
-                🔔
-                {receivedRequests.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-blue-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {receivedRequests.length}
+                <Bell className="w-4 h-4" />
+                {(receivedRequests.length > 0 || messageNotifications.length > 0) && (
+                  <span className="absolute -top-1 -right-1 bg-cyan-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {receivedRequests.length + messageNotifications.length}
                   </span>
                 )}
               </button>
-              {/* User Profile Icon */}
               <button
                 onClick={() => setShowUserProfile(true)}
-                className="p-1 rounded-full hover:ring-2 hover:ring-gray-600 transition"
+                className="p-1 rounded-full hover:ring-2 hover:ring-cyan-500 transition-all"
               >
                 <img
                   src={currentUser.profilePicture || "/default-avatar.png"}
                   alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover border-2 border-gray-600"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-slate-600"
                 />
               </button>
             </div>
@@ -233,29 +292,29 @@ function App() {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {currentView === "discover" && (
           <ProfileCarousel
             filters={filters}
             currentUser={currentUser}
-            onPairRequest={handlePairRequest}
+            onBondRequest={handleBondRequest}
           />
         )}
 
-        {currentView === "pairs" && (
+        {currentView === "bonds" && (
           <div className="max-w-4xl mx-auto">
-            <ActivePairsList
-              pairs={activePairs}
+            <ActiveBondsList
+              bonds={activeBonds}
               currentUser={currentUser}
               onOpenChat={handleOpenChat}
-              onUnpair={handleUnpair}
+              onUnbond={handleUnbond}
               onViewProfile={handleViewProfile}
             />
-            <PastPairsList
-              pastPairs={pastPairs}
+            <PastBondsList
+              pastBonds={pastBonds}
               currentUser={currentUser}
               onViewProfile={handleViewProfile}
-              onPairRequest={handlePairRequest}
+              onBondRequest={handleBondRequest}
             />
           </div>
         )}
@@ -271,17 +330,20 @@ function App() {
         )}
 
         {showNotifications && (
-          <PairRequestNotifications
-            requests={receivedRequests}
-            onAccept={handleAcceptRequest}
-            onDecline={handleDeclineRequest}
+          <NotificationsPanel
+            bondRequests={receivedRequests}
+            messageNotifications={messageNotifications}
+            onAcceptRequest={handleAcceptRequest}
+            onDeclineRequest={handleDeclineRequest}
+            onClickBondRequest={handleClickBondRequest}
+            onClickMessage={handleClickMessage}
             onClose={() => setShowNotifications(false)}
           />
         )}
 
-        {showChat && selectedPair && (
+        {showChat && selectedBond && (
           <Chat
-            pair={selectedPair}
+            bond={selectedBond}
             currentUser={currentUser}
             onClose={() => setShowChat(false)}
           />
@@ -311,7 +373,7 @@ function App() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-4 right-4 bg-gradient-to-r from-gray-800 to-blue-900 text-white px-6 py-4 rounded-lg shadow-lg max-w-sm z-40"
+            className="fixed top-4 right-4 bg-gradient-to-r from-slate-800 to-blue-900 text-white px-6 py-4 rounded-lg shadow-lg max-w-sm z-50 border border-slate-600"
           >
             <p className="font-semibold">New Message</p>
             <p className="text-sm mt-1">{newMessageNotification.message}</p>
@@ -319,17 +381,116 @@ function App() {
         )}
       </AnimatePresence>
 
-      {/* Unpair Confirmation Modal */}
+      {/* Bond Request Success Toast */}
+      <AnimatePresence>
+        {bondRequestNotification && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -20 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="fixed top-20 right-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-6 py-4 rounded-xl shadow-2xl max-w-sm z-50 border-2 border-cyan-400"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-lg">Success!</p>
+                <p className="text-sm mt-1">
+                  Bond request sent to {bondRequestNotification.name}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Unbond Confirmation Modal */}
       <ConfirmationModal
-        isOpen={!!unpairConfirmation}
-        title="Unpair Confirmation"
-        message={`Are you sure you want to unpair with ${unpairConfirmation?.profile?.displayName || unpairConfirmation?.profile?.name}?`}
-        confirmText="Unpair"
+        isOpen={!!unbondConfirmation}
+        title="Unbond Confirmation"
+        message={`Are you sure you want to unbond with ${unbondConfirmation?.profile?.displayName || unbondConfirmation?.profile?.name}?`}
+        confirmText="Unbond"
         cancelText="Cancel"
         confirmButtonClass="bg-blue-700 hover:bg-blue-800"
-        onConfirm={confirmUnpair}
-        onCancel={() => setUnpairConfirmation(null)}
+        onConfirm={confirmUnbond}
+        onCancel={() => setUnbondConfirmation(null)}
       />
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/95 backdrop-blur-md border-t border-slate-700 z-40">
+        <div className="flex justify-around items-center h-16 px-2">
+          {/* Discover */}
+          <button
+            onClick={() => setCurrentView("discover")}
+            className={`flex flex-col items-center justify-center flex-1 h-full transition-all ${
+              currentView === "discover"
+                ? "text-cyan-400"
+                : "text-slate-400"
+            }`}
+          >
+            <Search className={`w-6 h-6 ${currentView === "discover" ? "text-cyan-400" : ""}`} />
+            <span className="text-xs mt-1 font-medium">Discover</span>
+          </button>
+
+          {/* Bonds */}
+          <button
+            onClick={() => setCurrentView("bonds")}
+            className={`flex flex-col items-center justify-center flex-1 h-full transition-all relative ${
+              currentView === "bonds"
+                ? "text-cyan-400"
+                : "text-slate-400"
+            }`}
+          >
+            <Users className={`w-6 h-6 ${currentView === "bonds" ? "text-cyan-400" : ""}`} />
+            <span className="text-xs mt-1 font-medium">Bonds</span>
+            {activeBonds.length > 0 && (
+              <span className="absolute top-2 right-1/4 bg-cyan-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                {activeBonds.length}
+              </span>
+            )}
+          </button>
+
+          {/* Filters (only show on discover view) */}
+          {currentView === "discover" && (
+            <button
+              onClick={() => setShowFilters(true)}
+              className="flex flex-col items-center justify-center flex-1 h-full text-slate-400 transition-all"
+            >
+              <Settings className="w-6 h-6" />
+              <span className="text-xs mt-1 font-medium">Filters</span>
+            </button>
+          )}
+
+          {/* Notifications */}
+          <button
+            onClick={() => setShowNotifications(true)}
+            className="flex flex-col items-center justify-center flex-1 h-full text-slate-400 transition-all relative"
+          >
+            <Bell className="w-6 h-6" />
+            <span className="text-xs mt-1 font-medium">Notifications</span>
+            {(receivedRequests.length > 0 || messageNotifications.length > 0) && (
+              <span className="absolute top-2 right-1/4 bg-cyan-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                {receivedRequests.length + messageNotifications.length}
+              </span>
+            )}
+          </button>
+
+          {/* Profile */}
+          <button
+            onClick={() => setShowUserProfile(true)}
+            className="flex flex-col items-center justify-center flex-1 h-full text-slate-400 transition-all"
+          >
+            <img
+              src={currentUser.profilePicture || "/default-avatar.png"}
+              alt="Profile"
+              className="w-6 h-6 rounded-full object-cover border-2 border-slate-600"
+            />
+            <span className="text-xs mt-1 font-medium">Profile</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

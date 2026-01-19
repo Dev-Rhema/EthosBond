@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfileCard from './ProfileCard';
-import PairButtons from './PairButtons';
+import BondButtons from './BondButtons';
 import useCarousel from '../hooks/useCarousel';
 import useTimer from '../hooks/useTimer';
 
-export default function ProfileCarousel({ filters, currentUser, onPairRequest }) {
+export default function ProfileCarousel({ filters, currentUser, onBondRequest }) {
   const { currentProfile, nextProfile, skipProfile } = useCarousel(filters, currentUser?.address);
   const { timeLeft, resetTimer } = useTimer(15);
 
-  const handlePair = () => {
+  const handleBond = () => {
     if (!currentProfile) return;
-    onPairRequest(currentProfile);
+    onBondRequest(currentProfile);
     nextProfile();
     resetTimer();
   };
@@ -30,18 +30,18 @@ export default function ProfileCarousel({ filters, currentUser, onPairRequest })
   }, [timeLeft]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] p-4">
       {/* Timer Bar */}
-      <div className="w-full max-w-md mb-6">
-        <div className="h-2 bg-white bg-opacity-30 rounded-full overflow-hidden">
+      <div className="w-full max-w-md mb-4 sm:mb-6">
+        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-purple-400 to-blue-400"
+            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
             initial={{ width: '100%' }}
             animate={{ width: `${(timeLeft / 15) * 100}%` }}
             transition={{ duration: 0.5 }}
           />
         </div>
-        <p className="text-center text-sm text-white mt-2 font-medium">
+        <p className="text-center text-sm text-slate-300 mt-2 font-medium">
           {timeLeft}s remaining
         </p>
       </div>
@@ -62,8 +62,8 @@ export default function ProfileCarousel({ filters, currentUser, onPairRequest })
       </AnimatePresence>
 
       {/* Action Buttons */}
-      <PairButtons 
-        onPair={handlePair} 
+      <BondButtons
+        onBond={handleBond}
         onSkip={handleSkip}
         disabled={!currentProfile}
       />

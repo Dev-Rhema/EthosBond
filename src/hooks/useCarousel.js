@@ -91,10 +91,7 @@ export default function useCarousel(filters, currentUserId) {
   const skipProfile = () => {
     // Could track skipped profiles here for analytics
     const profile = filteredUsers[currentIndex];
-    console.log(
-      "Skipped:",
-      profile?.displayName || profile?.username || profile?.address,
-    );
+    // Profile skipped
   };
 
   return {

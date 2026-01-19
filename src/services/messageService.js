@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient";
+import { supabase } from "../lib/supabase";
 
 class MessageService {
   /**
@@ -115,8 +115,6 @@ class MessageService {
    * Returns an unsubscribe function
    */
   subscribeToMessages(pairId, callback) {
-    console.log(`Subscribing to messages for pair: ${pairId}`);
-
     const channel = supabase
       .channel(`messages:${pairId}`, {
         config: {
@@ -133,25 +131,17 @@ class MessageService {
           filter: `pair_id=eq.${pairId}`,
         },
         (payload) => {
-          console.log("Real-time message event received:", payload.new);
           callback(payload.new);
         },
       )
       .subscribe((status, err) => {
-        if (status === "SUBSCRIBED") {
-          console.log(`✅ Subscribed to messages for pair: ${pairId}`);
-        } else if (status === "CLOSED") {
-          console.log(`❌ Subscription closed for pair: ${pairId}`);
-        } else if (status === "CHANNEL_ERROR") {
+        if (status === "CHANNEL_ERROR") {
           console.error(`❌ Channel error for pair ${pairId}:`, err);
-        } else {
-          console.log(`Status: ${status}`, err);
         }
       });
 
     // Return unsubscribe function
     return () => {
-      console.log(`Unsubscribing from messages for pair: ${pairId}`);
       channel.unsubscribe();
     };
   }

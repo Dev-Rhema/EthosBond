@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { profileDB } from '../services/profileDatabase';
 
-export default function usePairing(currentUserAddress) {
-  const [activePairs, setActivePairs] = useState([]);
-  const [pastPairs] = useState([]);
+export default function useBonding(currentUserAddress) {
+  const [activeBonds, setActiveBonds] = useState([]);
+  const [pastBonds] = useState([]);
   const [receivedRequests, setReceivedRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
 
@@ -11,10 +11,10 @@ export default function usePairing(currentUserAddress) {
   useEffect(() => {
     if (!currentUserAddress) return;
 
-    loadPairingData();
+    loadBondingData();
   }, [currentUserAddress]);
 
-  const loadPairingData = async () => {
+  const loadBondingData = async () => {
     if (!currentUserAddress) return;
 
     try {
@@ -38,76 +38,76 @@ export default function usePairing(currentUserAddress) {
       const sent = await profileDB.getSentRequests(currentUserAddress);
       setSentRequests(sent);
 
-      // Load active pairs
-      const pairs = await profileDB.getUserActivePairs(currentUserAddress);
+      // Load active bonds
+      const bonds = await profileDB.getUserActivePairs(currentUserAddress);
       // Populate with full profile data
-      const pairsWithProfiles = await Promise.all(
-        pairs.map(async (pair) => {
-          const otherAddress = pair.user1_address.toLowerCase() === currentUserAddress.toLowerCase()
-            ? pair.user2_address
-            : pair.user1_address;
+      const bondsWithProfiles = await Promise.all(
+        bonds.map(async (bond) => {
+          const otherAddress = bond.user1_address.toLowerCase() === currentUserAddress.toLowerCase()
+            ? bond.user2_address
+            : bond.user1_address;
           const otherProfile = await profileDB.getProfileByAddress(otherAddress);
           return {
-            ...pair,
+            ...bond,
             profile: otherProfile,
           };
         })
       );
-      setActivePairs(pairsWithProfiles);
+      setActiveBonds(bondsWithProfiles);
     } catch (error) {
-      console.error('Error loading pairing data:', error);
+      console.error('Error loading bonding data:', error);
     }
   };
 
-  const sendPairRequest = async (toProfile) => {
+  const sendBondRequest = async (toProfile) => {
     try {
       await profileDB.sendPairRequest(currentUserAddress, toProfile);
-      await loadPairingData(); // Reload data
-      console.log('Sent pair request to:', toProfile.name || toProfile.displayName || toProfile.display_name);
+      await loadBondingData(); // Reload data
+      console.log('Sent bond request to:', toProfile.name || toProfile.displayName || toProfile.display_name);
     } catch (error) {
-      console.error('Error sending pair request:', error);
+      console.error('Error sending bond request:', error);
     }
   };
 
-  const acceptPairRequest = async (requestId) => {
+  const acceptBondRequest = async (requestId) => {
     try {
       await profileDB.acceptPairRequest(requestId);
-      await loadPairingData(); // Reload data
-      console.log('Accepted pair request');
+      await loadBondingData(); // Reload data
+      console.log('Accepted bond request');
     } catch (error) {
-      console.error('Error accepting pair request:', error);
+      console.error('Error accepting bond request:', error);
     }
   };
 
-  const declinePairRequest = async (requestId) => {
+  const declineBondRequest = async (requestId) => {
     try {
       await profileDB.declinePairRequest(requestId);
-      await loadPairingData(); // Reload data
-      console.log('Declined pair request');
+      await loadBondingData(); // Reload data
+      console.log('Declined bond request');
     } catch (error) {
-      console.error('Error declining pair request:', error);
+      console.error('Error declining bond request:', error);
     }
   };
 
-  const unpair = async (pairId) => {
+  const unbond = async (bondId) => {
     try {
-      await profileDB.removeActivePair(pairId);
-      await loadPairingData(); // Reload data
-      console.log('Unpaired successfully');
+      await profileDB.removeActivePair(bondId);
+      await loadBondingData(); // Reload data
+      console.log('Unbonded successfully');
     } catch (error) {
-      console.error('Error unpairing:', error);
+      console.error('Error unbonding:', error);
     }
   };
 
   return {
-    activePairs,
-    pastPairs,
+    activeBonds,
+    pastBonds,
     receivedRequests,
     sentRequests,
-    sendPairRequest,
-    acceptPairRequest,
-    declinePairRequest,
-    unpair,
-    refreshData: loadPairingData,
+    sendBondRequest,
+    acceptBondRequest,
+    declineBondRequest,
+    unbond,
+    refreshData: loadBondingData,
   };
 }
