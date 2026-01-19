@@ -1,0 +1,88 @@
+// Sample Ethereum addresses to fetch real Ethos data
+// These addresses are used as a starting pool - the app will fetch real Ethos profiles
+export const sampleAddresses = [
+  '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+  '0x8ba1f109551bD432803012645Ac136ddd64DBA72',
+  '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+  '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+  '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+  '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+  '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+];
+
+// Legacy mock users for backward compatibility - will be replaced with real Ethos data
+export const mockUsers = [
+  {
+    address: '0x1234567890123456789012345678901234567890',
+    name: 'Alice Chen',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alice',
+    ethosScore: 785,
+    location: 'San Francisco',
+    nationality: 'USA',
+    interests: ['Web3', 'Design', 'Music'],
+  },
+  {
+    address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+    name: 'Bob Martinez',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=bob',
+    ethosScore: 821,
+    location: 'New York',
+    nationality: 'USA',
+    interests: ['Gaming', 'DeFi', 'Fitness'],
+  },
+  {
+    address: '0x2222222222222222222222222222222222222222',
+    name: 'Sarah Kim',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah',
+    ethosScore: 892,
+    location: 'London',
+    nationality: 'UK',
+    interests: ['NFTs', 'Art', 'Travel'],
+  },
+  {
+    address: '0x3333333333333333333333333333333333333333',
+    name: 'Carlos Rodriguez',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=carlos',
+    ethosScore: 756,
+    location: 'Barcelona',
+    nationality: 'Spain',
+    interests: ['DeFi', 'Music', 'Football'],
+  },
+  {
+    address: '0x4444444444444444444444444444444444444444',
+    name: 'Yuki Tanaka',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=yuki',
+    ethosScore: 843,
+    location: 'Tokyo',
+    nationality: 'Japan',
+    interests: ['Gaming', 'Anime', 'Tech'],
+  },
+  {
+    address: '0x5555555555555555555555555555555555555555',
+    name: 'Emma Johnson',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=emma',
+    ethosScore: 798,
+    location: 'Toronto',
+    nationality: 'Canada',
+    interests: ['Web3', 'Photography', 'Hiking'],
+  },
+  {
+    address: '0x6666666666666666666666666666666666666666',
+    name: 'Mohammed Ali',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mohammed',
+    ethosScore: 812,
+    location: 'Dubai',
+    nationality: 'UAE',
+    interests: ['Crypto', 'Business', 'Travel'],
+  },
+  {
+    address: '0x7777777777777777777777777777777777777777',
+    name: 'Sofia Andersson',
+    profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sofia',
+    ethosScore: 867,
+    location: 'Stockholm',
+    nationality: 'Sweden',
+    interests: ['Design', 'Sustainability', 'Music'],
+  },
+];
