@@ -249,7 +249,9 @@ export default function OnboardingFlow({ onComplete }) {
             <div
               key={stepNum}
               className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                stepNum <= step ? "bg-gradient-to-r from-blue-500 to-cyan-500" : "bg-slate-700"
+                stepNum <= step
+                  ? "bg-gradient-to-r from-blue-500 to-cyan-500"
+                  : "bg-slate-700"
               }`}
             />
           ))}
@@ -257,12 +259,18 @@ export default function OnboardingFlow({ onComplete }) {
 
         {/* Step 1: Ethos Address */}
         {step === 1 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             <div className="mb-6 sm:mb-8">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-1 sm:mb-2 text-white">
                 Step 1 of 2
               </h2>
-              <p className="text-slate-400 text-xs sm:text-sm">Connect your Ethos address to get started</p>
+              <p className="text-slate-400 text-xs sm:text-sm">
+                Connect your Ethos address to get started
+              </p>
             </div>
 
             <div className="space-y-4 sm:space-y-5 md:space-y-6">
@@ -279,7 +287,9 @@ export default function OnboardingFlow({ onComplete }) {
                   }
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base"
                 />
-                <p className="text-xs text-slate-500 mt-1.5 sm:mt-2">Enter your Ethereum wallet address</p>
+                <p className="text-xs text-slate-500 mt-1.5 sm:mt-2">
+                  Enter your Ethereum wallet address
+                </p>
               </div>
 
               {error && (
@@ -301,12 +311,18 @@ export default function OnboardingFlow({ onComplete }) {
 
         {/* Step 2: Profile Details */}
         {step === 2 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             <div className="mb-6 sm:mb-8">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-1 sm:mb-2 text-white">
                 Step 2 of 2
               </h2>
-              <p className="text-slate-400 text-xs sm:text-sm">Complete your profile to get started</p>
+              <p className="text-slate-400 text-xs sm:text-sm">
+                Complete your profile to get started
+              </p>
             </div>
 
             {/* Profile Preview */}
@@ -316,10 +332,17 @@ export default function OnboardingFlow({ onComplete }) {
                 alt="Profile"
                 className="w-20 sm:w-24 md:w-28 h-20 sm:h-24 md:h-28 rounded-full border-4 border-cyan-500 mx-auto mb-3 sm:mb-4 object-cover shadow-lg"
               />
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2">{formData.name || "Your Name"}</h3>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2">
+                {formData.name || "Your Name"}
+              </h3>
               <div className="flex items-center justify-center gap-2">
                 <span className="text-cyan-400 text-base sm:text-lg">★</span>
-                <span className="text-slate-300 text-xs sm:text-sm">Ethos Score: <span className="font-bold text-cyan-400">{formData.ethosScore}</span></span>
+                <span className="text-slate-300 text-xs sm:text-sm">
+                  Ethos Score:{" "}
+                  <span className="font-bold text-cyan-400">
+                    {formData.ethosScore}
+                  </span>
+                </span>
               </div>
             </div>
 
@@ -455,7 +478,9 @@ export default function OnboardingFlow({ onComplete }) {
               {/* What are you looking for? */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">
-                  What are you looking for? <span className="text-red-400">*</span> (Select all that apply)
+                  What are you looking for?{" "}
+                  <span className="text-red-400">*</span> (Select all that
+                  apply)
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   {RELATIONSHIP_TYPES.map((type) => (
@@ -490,7 +515,8 @@ export default function OnboardingFlow({ onComplete }) {
               {/* Interests */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">
-                  Interests <span className="text-red-400">*</span> (Select all that apply)
+                  Interests <span className="text-red-400">*</span> (Select all
+                  that apply)
                 </label>
 
                 {/* Search interests */}
