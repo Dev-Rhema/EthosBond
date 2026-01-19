@@ -44,86 +44,90 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
             <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 sm:p-8">
 
           {/* Profile Picture */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-6">
             <img
               src={user.profilePicture || '/default-avatar.png'}
               alt={user.displayName || user.name}
-              className="w-32 h-32 rounded-full object-cover border-4 border-slate-600 shadow-lg"
+              className="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover border-4 border-cyan-500 shadow-xl"
             />
           </div>
 
           {/* Basic Info */}
-          <div className="text-center mb-4">
-            <h2 className="text-2xl font-bold text-slate-100">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-100 mb-2">
               {user.displayName || user.name || 'Anonymous'}
             </h2>
             {user.username && (
-              <p className="text-sm text-slate-400 mt-1">@{user.username}</p>
+              <p className="text-base text-slate-400">@{user.username}</p>
             )}
           </div>
 
           {/* Ethos Score & Trust Level */}
-          <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
-            <span className="px-3 py-1 bg-slate-700 text-slate-200 rounded-full text-sm font-medium">
-              ⭐ Ethos Score: {user.ethosScore || 0}
-            </span>
+          <div className="flex justify-center items-center gap-3 mb-8 flex-wrap">
+            <div className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-100 rounded-xl font-semibold shadow-md">
+              <span className="text-yellow-400">⭐</span>
+              <span>{user.ethosScore || 0}</span>
+            </div>
             {user.trustLevel && (
-              <span className="px-3 py-1 bg-slate-700 text-slate-200 rounded-full text-sm font-medium">
+              <div className="px-5 py-3 bg-slate-700 text-slate-100 rounded-xl font-semibold shadow-md border border-slate-600">
                 {user.trustLevel.charAt(0).toUpperCase() + user.trustLevel.slice(1)}
-              </span>
+              </div>
             )}
           </div>
 
           {/* XP Display */}
           {user.xpTotal > 0 && (
-            <div className="flex justify-center mb-4">
-              <span className="px-3 py-1 bg-slate-700 text-slate-200 rounded-full text-sm font-medium">
-                🎯 XP: {user.xpTotal.toLocaleString()}
-              </span>
+            <div className="flex justify-center mb-8">
+              <div className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border border-cyan-500/30 text-cyan-300 rounded-xl font-semibold shadow-md">
+                <span>🎯</span>
+                <span>{user.xpTotal.toLocaleString()} XP</span>
+              </div>
+            </div>
+          )}
+
+          {/* Bio */}
+          {user.bio && (
+            <div className="mb-8 p-6 bg-slate-700/30 rounded-xl border border-slate-600">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">About</h3>
+              <p className="text-slate-200 leading-relaxed">{user.bio}</p>
             </div>
           )}
 
           {/* Description */}
           {user.description && (
-            <div className="mb-4 text-center">
-              <p className="text-sm text-slate-300">{user.description}</p>
+            <div className="mb-8 p-6 bg-slate-700/30 rounded-xl border border-slate-600">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">Description</h3>
+              <p className="text-slate-200 leading-relaxed">{user.description}</p>
             </div>
           )}
 
-          {/* Address */}
-          <div className="text-center mb-4">
-            <p className="text-xs text-slate-500 font-mono">
-              {user.address.slice(0, 6)}...{user.address.slice(-4)}
-            </p>
-          </div>
-
           {/* Location & Nationality */}
           {(user.location || user.nationality) && (
-            <div className="flex justify-center gap-4 mb-4 text-slate-300 text-sm">
+            <div className="flex justify-center gap-6 mb-8 text-slate-300 flex-wrap">
               {user.location && (
-                <span className="flex items-center gap-1">
+                <div className="flex items-center gap-2 px-4 py-2 bg-slate-700/30 rounded-lg border border-slate-600">
                   <span>📍</span>
-                  <span>{user.location}</span>
-                </span>
+                  <span className="font-medium">{user.location}</span>
+                </div>
               )}
               {user.nationality && (
-                <span className="flex items-center gap-1">
+                <div className="flex items-center gap-2 px-4 py-2 bg-slate-700/30 rounded-lg border border-slate-600">
                   <span>🌍</span>
-                  <span>{user.nationality}</span>
-                </span>
+                  <span className="font-medium">{user.nationality}</span>
+                </div>
               )}
             </div>
           )}
 
           {/* Interests */}
           {user.interests && user.interests.length > 0 && (
-            <div className="mb-4">
-              <h3 className="font-semibold text-slate-200 mb-3 text-center">Interests</h3>
+            <div className="mb-8">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4 text-center">Interests</h3>
               <div className="flex flex-wrap gap-2 justify-center">
                 {user.interests.map((interest, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-200 rounded-full text-sm"
+                    className="px-4 py-2 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-100 rounded-lg border border-slate-600 font-medium shadow-sm hover:shadow-md transition"
                   >
                     {interest}
                   </span>
@@ -134,13 +138,13 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
 
           {/* Looking For */}
           {user.lookingFor && user.lookingFor.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-semibold text-slate-200 mb-3 text-center">Looking For</h3>
+            <div className="mb-8">
+              <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4 text-center">Looking For</h3>
               <div className="flex flex-wrap gap-2 justify-center">
                 {user.lookingFor.map((type, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-slate-700 text-slate-200 rounded-full text-sm"
+                    className="px-4 py-2 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border border-cyan-500/30 text-cyan-300 rounded-lg font-medium shadow-sm"
                   >
                     {type}
                   </span>
@@ -148,6 +152,18 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
               </div>
             </div>
           )}
+
+          {/* Address */}
+          <div className="mt-8 pt-6 border-t border-slate-700 mb-6">
+            <div className="text-center">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                Ethos Address
+              </h3>
+              <p className="text-xs text-slate-400 font-mono bg-slate-900/50 p-3 rounded-lg break-all border border-slate-700">
+                {user.address}
+              </p>
+            </div>
+          </div>
 
           {/* Action Buttons */}
           <div className="space-y-3 pt-4 border-t border-slate-700">

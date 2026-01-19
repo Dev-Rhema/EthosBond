@@ -73,68 +73,67 @@ export default function ProfileView({ profile, onClose }) {
             </div>
 
             {/* Basic Info */}
-            <div className="text-center mb-4">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-100">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-100 mb-2">
                 {displayName}
               </h2>
               {username && (
-                <p className="text-sm text-slate-400 mt-1">@{username}</p>
+                <p className="text-base text-slate-400">@{username}</p>
               )}
             </div>
 
             {/* Ethos Score & Trust Level */}
-            <div className="flex justify-center items-center gap-3 mb-6 flex-wrap">
-              <span className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-slate-200 rounded-full font-medium">
+            <div className="flex justify-center items-center gap-3 mb-8 flex-wrap">
+              <div className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-100 rounded-xl font-semibold shadow-md">
                 <Star className="w-5 h-5 text-yellow-400" />
-                {ethosScore}
-              </span>
-              <span
-                className={`px-4 py-2 rounded-full font-medium border-2 ${colorClass}`}
+                <span>{ethosScore}</span>
+              </div>
+              <div
+                className={`px-5 py-3 rounded-xl font-semibold border-2 shadow-md ${colorClass}`}
               >
                 {trustLevel.charAt(0).toUpperCase() + trustLevel.slice(1)}
-              </span>
+              </div>
             </div>
 
             {/* XP Display */}
             {xpTotal > 0 && (
-              <div className="flex justify-center mb-6">
-                <span className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-slate-200 rounded-full font-medium">
-                  <Target className="w-5 h-5 text-cyan-400" />
-                  {xpTotal.toLocaleString()} XP
-                </span>
+              <div className="flex justify-center mb-8">
+                <div className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border border-cyan-500/30 text-cyan-300 rounded-xl font-semibold shadow-md">
+                  <Target className="w-5 h-5" />
+                  <span>{xpTotal.toLocaleString()} XP</span>
+                </div>
+              </div>
+            )}
+
+            {/* Bio */}
+            {profile.bio && (
+              <div className="mb-8 p-6 bg-slate-700/30 rounded-xl border border-slate-600">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">About</h3>
+                <p className="text-slate-200 leading-relaxed">{profile.bio}</p>
               </div>
             )}
 
             {/* Description */}
             {description && (
-              <div className="mb-6 text-center">
-                <p className="text-slate-300">{description}</p>
+              <div className="mb-8 p-6 bg-slate-700/30 rounded-xl border border-slate-600">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-3">Description</h3>
+                <p className="text-slate-200 leading-relaxed">{description}</p>
               </div>
             )}
 
-            {/* Address */}
-            <div className="text-center mb-6">
-              <h3 className="text-sm font-semibold text-slate-400 mb-2">
-                Ethos Address
-              </h3>
-              <p className="text-xs text-slate-500 font-mono bg-slate-900 p-3 rounded break-all">
-                {profile.address}
-              </p>
-            </div>
-
             {/* Location & Nationality */}
             {(profile.location || profile.nationality) && (
-              <div className="flex justify-center gap-6 mb-6 text-slate-300 flex-wrap">
+              <div className="flex justify-center gap-6 mb-8 text-slate-300 flex-wrap">
                 {profile.location && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-cyan-400" />
-                    <span>{profile.location}</span>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-slate-700/30 rounded-lg border border-slate-600">
+                    <MapPin className="w-4 h-4 text-cyan-400" />
+                    <span className="font-medium">{profile.location}</span>
                   </div>
                 )}
                 {profile.nationality && (
-                  <div className="flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-cyan-400" />
-                    <span>{profile.nationality}</span>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-slate-700/30 rounded-lg border border-slate-600">
+                    <Globe className="w-4 h-4 text-cyan-400" />
+                    <span className="font-medium">{profile.nationality}</span>
                   </div>
                 )}
               </div>
@@ -142,15 +141,15 @@ export default function ProfileView({ profile, onClose }) {
 
             {/* Interests */}
             {profile.interests && profile.interests.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-slate-200 mb-3 text-center">
+              <div className="mb-8">
+                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide mb-4 text-center">
                   Interests
                 </h3>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {profile.interests.map((interest, idx) => (
                     <span
                       key={idx}
-                      className="px-4 py-2 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-200 rounded-full border border-slate-600"
+                      className="px-4 py-2 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-100 rounded-lg border border-slate-600 font-medium shadow-sm hover:shadow-md transition"
                     >
                       {interest}
                     </span>
@@ -158,6 +157,18 @@ export default function ProfileView({ profile, onClose }) {
                 </div>
               </div>
             )}
+
+            {/* Address */}
+            <div className="mt-8 pt-6 border-t border-slate-700">
+              <div className="text-center">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                  Ethos Address
+                </h3>
+                <p className="text-xs text-slate-400 font-mono bg-slate-900/50 p-3 rounded-lg break-all border border-slate-700">
+                  {profile.address}
+                </p>
+              </div>
+            </div>
 
             {/* Stats */}
             {profile.stats && (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, Users, Settings, Bell, User as UserIcon } from "lucide-react";
+import { Search, Users, Filter, Bell, User as UserIcon } from "lucide-react";
 import OnboardingFlow from "./components/OnboardingFlow";
 import ProfileCarousel from "./components/ProfileCarousel";
 import ActiveBondsList from "./components/ActiveBondsList";
@@ -261,7 +261,7 @@ function App() {
                   onClick={() => setShowFilters(true)}
                   className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-slate-700 text-slate-200 rounded-lg hover:bg-slate-600 transition-all"
                 >
-                  <Settings className="w-4 h-4" />
+                  <Filter className="w-4 h-4" />
                   <span className="hidden lg:inline">Filters</span>
                 </button>
               )}
@@ -458,7 +458,7 @@ function App() {
               onClick={() => setShowFilters(true)}
               className="flex flex-col items-center justify-center flex-1 h-full text-slate-400 transition-all"
             >
-              <Settings className="w-6 h-6" />
+              <Filter className="w-6 h-6" />
               <span className="text-xs mt-1 font-medium">Filters</span>
             </button>
           )}

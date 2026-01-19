@@ -65,43 +65,77 @@ export const INTERESTS = [
   'Content Creation',
 ].sort();
 
+// Gender preferences
+export const GENDER_PREFERENCES = [
+  {
+    id: 'man-woman',
+    label: 'Man looking for Woman',
+    icon: '👨‍❤️‍👩',
+  },
+  {
+    id: 'woman-man',
+    label: 'Woman looking for Man',
+    icon: '👩‍❤️‍👨',
+  },
+  {
+    id: 'man-man',
+    label: 'Man looking for Man',
+    icon: '👨‍❤️‍👨',
+  },
+  {
+    id: 'woman-woman',
+    label: 'Woman looking for Woman',
+    icon: '👩‍❤️‍👩',
+  },
+  {
+    id: 'man-everyone',
+    label: 'Man looking for Everyone',
+    icon: '👨💫',
+  },
+  {
+    id: 'woman-everyone',
+    label: 'Woman looking for Everyone',
+    icon: '👩💫',
+  },
+];
+
 // Relationship types users are looking for
 export const RELATIONSHIP_TYPES = [
   {
-    id: 'friendship',
-    label: 'Friendship',
-    icon: '🤝',
-    description: 'Looking for new friends and connections'
+    id: 'serious-relationship',
+    label: 'Serious Relationship',
+    icon: '💑',
+    description: 'Looking for a long-term committed relationship'
   },
   {
-    id: 'relationship',
-    label: 'Romantic Relationship',
+    id: 'casual-dating',
+    label: 'Casual Dating',
     icon: '💕',
-    description: 'Seeking a romantic partner'
+    description: 'Open to dating without serious commitment'
   },
   {
-    id: 'networking',
-    label: 'Professional Networking',
-    icon: '💼',
-    description: 'Building professional connections'
+    id: 'hookup',
+    label: 'Hookup',
+    icon: '🔥',
+    description: 'Seeking casual encounters and fun'
   },
   {
-    id: 'collaboration',
-    label: 'Collaboration',
-    icon: '🤝',
-    description: 'Looking for project partners or collaborators'
+    id: 'friends-with-benefits',
+    label: 'Friends with Benefits',
+    icon: '😏',
+    description: 'Looking for friendship with physical intimacy'
   },
   {
-    id: 'mentorship',
-    label: 'Mentorship',
-    icon: '🎓',
-    description: 'Seeking a mentor or willing to mentor others'
+    id: 'open-relationship',
+    label: 'Open Relationship',
+    icon: '💫',
+    description: 'Interested in non-monogamous connections'
   },
   {
-    id: 'casual',
-    label: 'Casual Hangouts',
-    icon: '☕',
-    description: 'Just looking to meet people casually'
+    id: 'exploring',
+    label: 'Just Exploring',
+    icon: '💭',
+    description: 'Figuring out what I want'
   },
 ];
 

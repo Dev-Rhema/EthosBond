@@ -12,6 +12,7 @@ import {
 import {
   INTERESTS,
   RELATIONSHIP_TYPES,
+  GENDER_PREFERENCES,
   filterInterests,
 } from "../utils/filterOptions";
 
@@ -23,6 +24,8 @@ export default function OnboardingFlow({ onComplete }) {
   const [formData, setFormData] = useState({
     ethosAddress: "",
     name: "",
+    bio: "",
+    genderPreference: "",
     location: "",
     nationality: "",
     continent: "",
@@ -188,6 +191,11 @@ export default function OnboardingFlow({ onComplete }) {
   const handleProfileSubmit = async () => {
     if (!formData.name || !formData.location) {
       setError("Please fill in your name and location");
+      return;
+    }
+
+    if (!formData.genderPreference) {
+      setError("Please select your gender preference");
       return;
     }
 
@@ -361,20 +369,50 @@ export default function OnboardingFlow({ onComplete }) {
                 />
               </div>
 
-              {/* Location */}
+              {/* Bio */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
-                  Location <span className="text-red-400">*</span>
+                  Bio
                 </label>
-                <input
-                  type="text"
-                  placeholder="e.g., San Francisco"
-                  value={formData.location}
-                  onChange={(e) =>
-                    handleFieldChange("location", e.target.value)
-                  }
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base"
+                <textarea
+                  placeholder="More about yourself"
+                  value={formData.bio}
+                  onChange={(e) => handleFieldChange("bio", e.target.value)}
+                  rows="3"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base resize-none"
                 />
+              </div>
+
+              {/* Gender Preference */}
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">
+                  I am... <span className="text-red-400">*</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  {GENDER_PREFERENCES.map((pref) => (
+                    <button
+                      key={pref.id}
+                      onClick={() => handleFieldChange("genderPreference", pref.id)}
+                      className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition text-left ${
+                        formData.genderPreference === pref.id
+                          ? "border-cyan-500 bg-slate-700/50"
+                          : "border-slate-600 hover:border-cyan-500/50 bg-slate-700/20"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <span className="text-lg sm:text-xl">{pref.icon}</span>
+                        <div className="flex-1">
+                          <div className="font-semibold text-white text-xs sm:text-sm">
+                            {pref.label}
+                          </div>
+                        </div>
+                        {formData.genderPreference === pref.id && (
+                          <span className="text-cyan-400">✓</span>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Continent & Nationality */}
@@ -473,6 +511,22 @@ export default function OnboardingFlow({ onComplete }) {
                     </p>
                   )}
                 </div>
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
+                  Location <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., San Francisco"
+                  value={formData.location}
+                  onChange={(e) =>
+                    handleFieldChange("location", e.target.value)
+                  }
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-slate-700 border border-slate-600 rounded-lg sm:rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition text-sm sm:text-base"
+                />
               </div>
 
               {/* What are you looking for? */}
