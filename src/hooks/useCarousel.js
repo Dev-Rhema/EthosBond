@@ -22,7 +22,7 @@ export default function useCarousel(filters, currentUserId) {
         const bondedUserAddresses = bonds.map((bond) =>
           bond.user1_address.toLowerCase() === currentUserId.toLowerCase()
             ? bond.user2_address.toLowerCase()
-            : bond.user1_address.toLowerCase()
+            : bond.user1_address.toLowerCase(),
         );
 
         // Apply filters
