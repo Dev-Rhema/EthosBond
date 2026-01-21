@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Compass, Heart, User as UserIcon, ArrowLeft } from "lucide-react";
+import ethosbondlogo from "./assets/EthosBond_logo.svg";
 import OnboardingFlow from "./components/OnboardingFlow";
 import ProfileCarousel from "./components/ProfileCarousel";
 import MatchesPage from "./components/MatchesPage";
@@ -234,9 +235,11 @@ function App() {
                 </button>
               )}
               {/* Logo */}
-              <h1 className="text-lg font-semibold text-cyan-400">
-                Ethos Bond
-              </h1>
+              <img
+                src={ethosbondlogo}
+                alt="Ethos Bond"
+                className="h-8 w-auto bg-transparent"
+              />
             </div>
 
             {/* Notification Bell */}
