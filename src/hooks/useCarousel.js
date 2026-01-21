@@ -17,12 +17,25 @@ export default function useCarousel(filters, currentUserId) {
         // Get blocked users list
         const blockedUsers = await profileDB.getBlockedUsers(currentUserId);
 
+        // Get bonded users list
+        const bonds = await profileDB.getUserActivePairs(currentUserId);
+        const bondedUserAddresses = bonds.map((bond) =>
+          bond.user1_address.toLowerCase() === currentUserId.toLowerCase()
+            ? bond.user2_address.toLowerCase()
+            : bond.user1_address.toLowerCase()
+        );
+
         // Apply filters
         let filtered = profiles;
 
         // Filter out blocked users
         filtered = filtered.filter(
           (u) => !blockedUsers.includes(u.address.toLowerCase()),
+        );
+
+        // Filter out bonded users
+        filtered = filtered.filter(
+          (u) => !bondedUserAddresses.includes(u.address.toLowerCase()),
         );
 
         if (filters.location) {
