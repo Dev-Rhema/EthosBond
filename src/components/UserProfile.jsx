@@ -1,8 +1,8 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
-import { ArrowLeft, Edit2, ExternalLink, Wallet } from 'lucide-react';
-import EditProfileModal from './EditProfileModal';
-import { profileDB } from '../services/profileDatabase';
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { ArrowLeft, Edit2, ExternalLink, Wallet } from "lucide-react";
+import EditProfileModal from "./EditProfileModal";
+import { profileDB } from "../services/profileDatabase";
 
 export default function UserProfile({ user, onClose, onLogout, onDelete }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -29,13 +29,15 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000);
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error("Error updating profile:", error);
       throw error;
     }
   };
 
   // Calculate credibility percentage
-  const credibilityPercent = Math.round(((currentUser.ethosScore || 0) / 2800) * 100);
+  const credibilityPercent = Math.round(
+    ((currentUser.ethosScore || 0) / 2800) * 100,
+  );
 
   // Calculate total reviews received (positive + neutral + negative)
   const reviewsReceived = currentUser.stats?.review?.received
@@ -46,11 +48,11 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
 
   // Get trust level label
   const getTrustLabel = (score) => {
-    if (score >= 2000) return 'Exceptional';
-    if (score >= 1600) return 'Reputable';
-    if (score >= 1200) return 'Neutral';
-    if (score >= 800) return 'Questionable';
-    return 'Untrusted';
+    if (score >= 2000) return "Exceptional";
+    if (score >= 1600) return "Reputable";
+    if (score >= 1200) return "Neutral";
+    if (score >= 800) return "Questionable";
+    return "Untrusted";
   };
 
   return (
@@ -92,13 +94,12 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
-
             {/* Profile Header Card */}
             <div className="flex flex-col items-center">
               {/* Profile Picture */}
               <div className="relative mb-3">
                 <img
-                  src={currentUser.profilePicture || '/default-avatar.png'}
+                  src={currentUser.profilePicture || "/default-avatar.png"}
                   alt={currentUser.displayName || currentUser.name}
                   className="w-28 h-28 rounded-full object-cover border-4 border-slate-700"
                 />
@@ -113,11 +114,19 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
               {/* Name and Location */}
               <div className="flex items-center gap-2 mb-1">
                 <h2 className="text-xl font-bold text-white">
-                  {currentUser.displayName || currentUser.name || 'Anonymous'}
+                  {currentUser.displayName || currentUser.name || "Anonymous"}
                 </h2>
                 <div className="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center">
-                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </div>
@@ -145,19 +154,27 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
               <div className="flex justify-center mb-4">
                 <div className="flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 rounded-full">
                   <span className="text-yellow-400">★</span>
-                  <span className="text-cyan-400 font-bold">{currentUser.ethosScore || 0}</span>
-                  <span className="text-slate-300 text-sm">{getTrustLabel(currentUser.ethosScore || 0)}</span>
+                  <span className="text-cyan-400 font-bold">
+                    {currentUser.ethosScore || 0}
+                  </span>
+                  <span className="text-slate-300 text-sm">
+                    {getTrustLabel(currentUser.ethosScore || 0)}
+                  </span>
                 </div>
               </div>
 
               {/* Stats Row */}
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <p className="text-2xl font-bold text-cyan-400">{credibilityPercent}%</p>
+                  <p className="text-2xl font-bold text-cyan-400">
+                    {credibilityPercent}%
+                  </p>
                   <p className="text-xs text-slate-400">Credibility</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{reviewsReceived}</p>
+                  <p className="text-2xl font-bold text-white">
+                    {reviewsReceived}
+                  </p>
                   <p className="text-xs text-slate-400">Reviews</p>
                 </div>
               </div>
@@ -171,9 +188,12 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
                     <Wallet className="w-5 h-5 text-cyan-400" />
                   </div>
                   <div>
-                    <p className="text-white text-sm font-medium">Connected Wallet</p>
+                    <p className="text-white text-sm font-medium">
+                      Connected Wallet
+                    </p>
                     <p className="text-slate-400 text-xs font-mono">
-                      {currentUser.address?.slice(0, 6)}...{currentUser.address?.slice(-4)}
+                      {currentUser.address?.slice(0, 6)}...
+                      {currentUser.address?.slice(-4)}
                     </p>
                   </div>
                 </div>
@@ -196,7 +216,9 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
                 </button>
               </div>
               <p className="text-slate-300 text-sm mb-4">
-                {currentUser.bio || currentUser.description || 'No bio added yet.'}
+                {currentUser.bio ||
+                  currentUser.description ||
+                  "No bio added yet."}
               </p>
 
               {/* Interests */}
@@ -243,7 +265,6 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
                 Delete Account
               </button>
             </div>
-
           </div>
         </div>
       </motion.div>
@@ -265,9 +286,12 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
               onClick={(e) => e.stopPropagation()}
               className="bg-slate-800 rounded-2xl shadow-2xl p-6 w-full max-w-sm border border-slate-700"
             >
-              <h3 className="text-xl font-bold text-red-400 mb-3">Delete Account?</h3>
+              <h3 className="text-xl font-bold text-red-400 mb-3">
+                Delete Account?
+              </h3>
               <p className="text-slate-300 mb-6 text-sm">
-                Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently removed.
+                Are you sure you want to delete your account? This action cannot
+                be undone. All your data will be permanently removed.
               </p>
               <div className="flex gap-3">
                 <button
@@ -305,7 +329,9 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
               onClick={(e) => e.stopPropagation()}
               className="bg-slate-800 rounded-2xl shadow-2xl p-6 w-full max-w-sm border border-slate-700"
             >
-              <h3 className="text-xl font-bold text-slate-100 mb-3">Disconnect Wallet?</h3>
+              <h3 className="text-xl font-bold text-slate-100 mb-3">
+                Disconnect Wallet?
+              </h3>
               <p className="text-slate-300 mb-6 text-sm">
                 Are you sure you want to disconnect your wallet and logout?
               </p>

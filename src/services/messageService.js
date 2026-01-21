@@ -200,17 +200,20 @@ class MessageService {
   async getLastMessagesForPairs(pairIds, userAddress) {
     try {
       const messagesData = {};
-      
+
       for (const pairId of pairIds) {
         const lastMessage = await this.getLastMessage(pairId);
-        const unreadCount = await this.getUnreadCountPerPair(pairId, userAddress);
-        
+        const unreadCount = await this.getUnreadCountPerPair(
+          pairId,
+          userAddress,
+        );
+
         messagesData[pairId] = {
           lastMessage,
           unreadCount,
         };
       }
-      
+
       return messagesData;
     } catch (error) {
       console.error("Error getting last messages for pairs:", error);

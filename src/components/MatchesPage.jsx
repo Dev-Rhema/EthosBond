@@ -1,8 +1,16 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, MessageCircle, MoreVertical, User, Link2Off, Ban, AlertCircle } from 'lucide-react';
-import { profileDB } from '../services/profileDatabase';
-import ConfirmationModal from './ConfirmationModal';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Sparkles,
+  MessageCircle,
+  MoreVertical,
+  User,
+  Link2Off,
+  Ban,
+  AlertCircle,
+} from "lucide-react";
+import { profileDB } from "../services/profileDatabase";
+import ConfirmationModal from "./ConfirmationModal";
 
 export default function MatchesPage({
   bonds,
@@ -27,8 +35,8 @@ export default function MatchesPage({
       setOpenMenuId(null);
       setBlockConfirmation(null);
     } catch (error) {
-      console.error('Error blocking user:', error);
-      alert('Failed to block user');
+      console.error("Error blocking user:", error);
+      alert("Failed to block user");
     } finally {
       setIsBlockingLoading(false);
     }
@@ -52,7 +60,9 @@ export default function MatchesPage({
 
         {bonds.length === 0 ? (
           <div className="bg-slate-800/50 rounded-2xl p-6 text-center border border-slate-700/50">
-            <p className="text-slate-400 text-sm">No matches yet. Keep discovering!</p>
+            <p className="text-slate-400 text-sm">
+              No matches yet. Keep discovering!
+            </p>
           </div>
         ) : (
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
@@ -71,7 +81,7 @@ export default function MatchesPage({
                 >
                   <div className="relative">
                     <img
-                      src={profile.profilePicture || '/default-avatar.png'}
+                      src={profile.profilePicture || "/default-avatar.png"}
                       alt={profile.displayName || profile.name}
                       className="w-16 h-16 rounded-full object-cover border-2 border-cyan-500"
                     />
@@ -79,7 +89,7 @@ export default function MatchesPage({
                     <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-900" />
                   </div>
                   <p className="text-white text-sm mt-2 font-medium truncate max-w-[70px]">
-                    {profile.displayName || profile.name || 'Anonymous'}
+                    {profile.displayName || profile.name || "Anonymous"}
                   </p>
                   <p className="text-cyan-400 text-xs">
                     {profile.ethosScore || 0}
@@ -126,7 +136,7 @@ export default function MatchesPage({
                       {/* Profile Picture */}
                       <div className="relative flex-shrink-0">
                         <img
-                          src={profile.profilePicture || '/default-avatar.png'}
+                          src={profile.profilePicture || "/default-avatar.png"}
                           alt={profile.displayName || profile.name}
                           className="w-14 h-14 rounded-full object-cover border-2 border-slate-700"
                         />
@@ -138,14 +148,18 @@ export default function MatchesPage({
                       <div className="flex-1 min-w-0 text-left">
                         <div className="flex items-center justify-between">
                           <h3 className="text-white font-medium truncate">
-                            {profile.displayName || profile.name || 'Anonymous'}
+                            {profile.displayName || profile.name || "Anonymous"}
                           </h3>
                           <span className="text-slate-500 text-xs flex-shrink-0 ml-2">
-                            {bond.lastMessageTime ? new Date(bond.lastMessageTime).toLocaleDateString() : ''}
+                            {bond.lastMessageTime
+                              ? new Date(
+                                  bond.lastMessageTime,
+                                ).toLocaleDateString()
+                              : ""}
                           </span>
                         </div>
                         <p className="text-slate-400 text-sm truncate mt-0.5">
-                          {bond.lastMessage || 'No messages yet'}
+                          {bond.lastMessage || "No messages yet"}
                         </p>
                       </div>
                     </button>
@@ -194,12 +208,16 @@ export default function MatchesPage({
                         <button
                           onClick={() => {
                             const ethosUrl = `https://www.ethos.network/profile/${profile.address}`;
-                            window.open(ethosUrl, '_blank');
+                            window.open(ethosUrl, "_blank");
                             setOpenMenuId(null);
                           }}
                           className="w-full text-left px-4 py-3 text-cyan-300 hover:bg-slate-600 transition flex items-center gap-2 text-sm border-t border-slate-600"
                         >
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
                             <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.343a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM15.657 14.657a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM11 17a1 1 0 102 0v-1a1 1 0 10-2 0v1zM5.343 15.657a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707zM5 10a1 1 0 01-1-1V8a1 1 0 012 0v1a1 1 0 01-1 1zM5.343 5.343a1 1 0 011.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM10 5a1 1 0 01-1-1V3a1 1 0 012 0v1a1 1 0 01-1 1z" />
                           </svg>
                           Leave a Review

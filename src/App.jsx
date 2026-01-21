@@ -74,7 +74,9 @@ function App() {
       currentUser.address,
       async (newMessage) => {
         // Get sender profile info
-        const senderProfile = await profileDB.getProfileByAddress(newMessage.sender_address);
+        const senderProfile = await profileDB.getProfileByAddress(
+          newMessage.sender_address,
+        );
 
         // Add to message notifications list
         const notification = {
@@ -118,7 +120,7 @@ function App() {
     // Show success notification toast
     setBondRequestNotification({
       name: profile.displayName || profile.name,
-      message: "Bond request sent successfully!"
+      message: "Bond request sent successfully!",
     });
 
     // Auto-hide notification after 3 seconds
@@ -185,7 +187,8 @@ function App() {
     // Find the bond for this message
     const bond = activeBonds.find(
       (b) =>
-        b.profile.address.toLowerCase() === messageNotif.senderAddress.toLowerCase()
+        b.profile.address.toLowerCase() ===
+        messageNotif.senderAddress.toLowerCase(),
     );
 
     if (bond) {
@@ -241,10 +244,21 @@ function App() {
               onClick={() => setShowNotifications(true)}
               className="relative p-2 text-slate-400 hover:text-white transition"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
               </svg>
-              {(receivedRequests.length > 0 || messageNotifications.length > 0) && (
+              {(receivedRequests.length > 0 ||
+                messageNotifications.length > 0) && (
                 <span className="absolute top-1 right-1 bg-cyan-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
                   {receivedRequests.length + messageNotifications.length}
                 </span>
@@ -386,9 +400,7 @@ function App() {
           <button
             onClick={() => setCurrentView("discover")}
             className={`flex flex-col items-center justify-center flex-1 h-full transition-all ${
-              currentView === "discover"
-                ? "text-cyan-400"
-                : "text-slate-500"
+              currentView === "discover" ? "text-cyan-400" : "text-slate-500"
             }`}
           >
             <Compass className="w-6 h-6" />
@@ -399,14 +411,12 @@ function App() {
           <button
             onClick={() => setCurrentView("bonds")}
             className={`flex flex-col items-center justify-center flex-1 h-full transition-all relative ${
-              currentView === "bonds"
-                ? "text-cyan-400"
-                : "text-slate-500"
+              currentView === "bonds" ? "text-cyan-400" : "text-slate-500"
             }`}
           >
             <Heart className="w-6 h-6" />
             <span className="text-xs mt-1">Bonds</span>
-            {activeBonds.some(bond => bond.unreadCount > 0) && (
+            {activeBonds.some((bond) => bond.unreadCount > 0) && (
               <span className="absolute top-2 right-3 bg-cyan-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
                 •
               </span>
