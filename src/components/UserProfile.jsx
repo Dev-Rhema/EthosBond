@@ -182,24 +182,19 @@ export default function UserProfile({ user, onClose, onLogout, onDelete }) {
 
             {/* Connected Wallet Card */}
             <div className="bg-slate-800 rounded-2xl p-4 border border-slate-700">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
-                    <Wallet className="w-5 h-5 text-cyan-400" />
-                  </div>
-                  <div>
-                    <p className="text-white text-sm font-medium">
-                      Connected Wallet
-                    </p>
-                    <p className="text-slate-400 text-xs font-mono">
-                      {currentUser.address?.slice(0, 6)}...
-                      {currentUser.address?.slice(-4)}
-                    </p>
-                  </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-cyan-400" />
                 </div>
-                <button className="text-slate-400 text-sm hover:text-cyan-400 transition">
-                  Change
-                </button>
+                <div>
+                  <p className="text-white text-sm font-medium">
+                    Connected Wallet
+                  </p>
+                  <p className="text-slate-400 text-xs font-mono">
+                    {currentUser.address?.slice(0, 6)}...
+                    {currentUser.address?.slice(-4)}
+                  </p>
+                </div>
               </div>
             </div>
 

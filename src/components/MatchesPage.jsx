@@ -53,7 +53,7 @@ export default function MatchesPage({
           </h2>
           {bonds.length > 0 && (
             <span className="bg-cyan-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-              {bonds.length}
+              {bonds.filter(b => !b.lastMessage).length}
             </span>
           )}
         </div>
@@ -66,7 +66,7 @@ export default function MatchesPage({
           </div>
         ) : (
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {bonds.map((bond, index) => {
+            {bonds.filter(b => !b.lastMessage).map((bond, index) => {
               const profile = bond.profile;
               if (!profile) return null;
 
