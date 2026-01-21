@@ -144,6 +144,49 @@ export const RELATIONSHIP_TYPES = [
  * @param {string} query - Search query
  * @returns {string[]} - Filtered interests
  */
+/**
+ * Ethos trust level ranges for profile visibility
+ * Based on Ethos Network's actual score ranges (0-2800)
+ * Source: https://developers.ethos.network/
+ */
+export const ETHOS_VISIBILITY_LEVELS = [
+  {
+    id: 'everyone',
+    label: 'Everyone',
+    minScore: 0,
+    description: 'Your profile is visible to all users (0+)'
+  },
+  {
+    id: 'questionable',
+    label: 'Questionable & Above',
+    minScore: 800,
+    description: 'Only users with score 800+ (Questionable or higher)'
+  },
+  {
+    id: 'neutral',
+    label: 'Neutral & Above',
+    minScore: 1200,
+    description: 'Only users with score 1200+ (Neutral or higher)'
+  },
+  {
+    id: 'good',
+    label: 'Good Reputation & Above',
+    minScore: 1600,
+    description: 'Only users with score 1600+ (Good reputation or higher)'
+  },
+  {
+    id: 'excellent',
+    label: 'Excellent Only',
+    minScore: 2000,
+    description: 'Only users with excellent reputation (2000+)'
+  },
+];
+
+/**
+ * Filter interests based on search query
+ * @param {string} query - Search query
+ * @returns {string[]} - Filtered interests
+ */
 export const filterInterests = (query) => {
   if (!query || query.length < 2) return INTERESTS;
   const normalized = query.toLowerCase().trim();

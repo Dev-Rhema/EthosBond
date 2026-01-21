@@ -47,6 +47,8 @@ class ProfileDatabase {
           trustLevel: data.trust_level,
           xpTotal: data.xp_total,
           lookingFor: data.looking_for,
+          genderPreference: data.gender_preference,
+          minVisibleToEthosScore: data.min_visible_to_ethos_score || 0,
         };
       }
       return data;
@@ -76,6 +78,8 @@ class ProfileDatabase {
         trust_level: profileData.trustLevel,
         xp_total: profileData.xpTotal || 0,
         description: profileData.description,
+        gender_preference: profileData.genderPreference,
+        min_visible_to_ethos_score: profileData.minVisibleToEthosScore || 0,
         updated_at: new Date().toISOString(),
       };
 
@@ -112,10 +116,19 @@ class ProfileDatabase {
   }
 
   /**
-   * Get all profiles except the current user
+   * Get all profiles except the current user, with filtering based on:
+   * 1. Profile visibility settings (minVisibleToEthosScore)
+   * 2. Gender preferences matching
    */
   async getProfilesForDiscovery(currentUserAddress) {
     try {
+      // First, get the current user's profile to check their score and preferences
+      const currentUser = await this.getProfileByAddress(currentUserAddress);
+      if (!currentUser) {
+        console.error("Current user not found");
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -133,9 +146,11 @@ class ProfileDatabase {
         trustLevel: profile.trust_level,
         xpTotal: profile.xp_total,
         lookingFor: profile.looking_for,
+        genderPreference: profile.gender_preference,
+        minVisibleToEthosScore: profile.min_visible_to_ethos_score || 0,
       }));
 
-      // Fetch fresh trust levels from Ethos API for each profile
+      // Fetch fresh trust levels and stats from Ethos API for each profile
       const { ethosService } = await import("./ethosService");
       profiles = await Promise.all(
         profiles.map(async (profile) => {
@@ -147,6 +162,8 @@ class ProfileDatabase {
               ...profile,
               trustLevel: ethosData.trustLevel,
               ethosScore: ethosData.ethosScore,
+              stats: ethosData.stats || {},
+              xpTotal: ethosData.xpTotal || profile.xpTotal || 0,
             };
           } catch (error) {
             console.error(
@@ -157,6 +174,44 @@ class ProfileDatabase {
           }
         }),
       );
+
+      // Filter profiles based on visibility and gender preferences
+      profiles = profiles.filter((profile) => {
+        // 1. Check if current user meets the profile's visibility requirements
+        const meetsVisibilityRequirement = currentUser.ethosScore >= profile.minVisibleToEthosScore;
+
+        if (!meetsVisibilityRequirement) {
+          return false;
+        }
+
+        // 2. Check gender preference matching
+        const currentUserPref = currentUser.genderPreference;
+        const profilePref = profile.genderPreference;
+
+        // If either user has no preference set, show the profile
+        if (!currentUserPref || !profilePref) {
+          return true;
+        }
+
+        // Extract gender identities and looking-for from preferences
+        // Format: 'man-woman' means "man looking for woman"
+        const [currentUserGender, currentUserLookingFor] = currentUserPref.split('-');
+        const [profileGender, profileLookingFor] = profilePref.split('-');
+
+        // Check if they're a match:
+        // Current user should be what the profile is looking for
+        // AND profile should be what current user is looking for
+
+        const currentUserMatchesProfilePreference =
+          profileLookingFor === 'everyone' ||
+          profileLookingFor === currentUserGender;
+
+        const profileMatchesCurrentUserPreference =
+          currentUserLookingFor === 'everyone' ||
+          currentUserLookingFor === profileGender;
+
+        return currentUserMatchesProfilePreference && profileMatchesCurrentUserPreference;
+      });
 
       return profiles;
     } catch (error) {

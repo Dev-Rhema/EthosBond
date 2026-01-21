@@ -1,181 +1,107 @@
 import { motion } from "framer-motion";
-import { Star, Target, MapPin, Globe } from "lucide-react";
+import { MapPin, Clock } from "lucide-react";
 
 export default function ProfileCard({ profile }) {
   if (!profile) {
     return (
-      <div className="bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-md h-[500px] flex items-center justify-center">
-        <p className="text-gray-400">No more profiles to show</p>
+      <div className="bg-slate-800 rounded-3xl shadow-xl w-full max-w-sm h-[520px] flex items-center justify-center">
+        <p className="text-slate-400">No more profiles to show</p>
       </div>
     );
   }
 
-  // Support both real Ethos data and legacy mock data
   const displayName = profile.displayName || profile.name || "Anonymous";
-  const username = profile.username;
   const ethosScore = profile.ethosScore || 0;
-  const trustLevel = profile.trustLevel || "untrusted";
-  const trustLevelColor = profile.trustLevelColor; // Color from API
-  const description = profile.description;
-  const xpTotal = profile.xpTotal || 0;
+  const description = profile.description || profile.bio;
 
-  // Get trust level color based on score ranges (fallback if API doesn't provide color)
-  const getTrustLevelColor = (level) => {
-    switch (level) {
-      case "renowned":
-        return "border-purple-800 text-purple-800";
-      case "revered":
-        return "border-purple-700 text-purple-700";
-      case "distinguished":
-        return "border-indigo-700 text-indigo-700";
-      case "exemplary":
-        return "border-blue-700 text-blue-700";
-      case "reputable":
-        return "border-cyan-700 text-cyan-700";
-      case "established":
-        return "border-teal-700 text-teal-700";
-      case "known":
-        return "border-green-700 text-green-700";
-      case "neutral":
-        return "border-yellow-700 text-yellow-700";
-      case "questionable":
-        return "border-orange-700 text-orange-700";
-      case "untrusted":
-        return "border-red-700 text-red-700";
-      default:
-        return "border-gray-700 text-gray-700";
-    }
-  };
+  // Calculate credibility percentage (score out of 2800)
+  const credibilityPercent = Math.round((ethosScore / 2800) * 100);
 
-  // Use API color if available, otherwise use calculated color
-  const colorClass = trustLevelColor || getTrustLevelColor(trustLevel);
+  // Calculate total reviews received (positive + neutral + negative)
+  const reviewsReceived = profile.stats?.review?.received
+    ? (profile.stats.review.received.positive || 0) +
+      (profile.stats.review.received.neutral || 0) +
+      (profile.stats.review.received.negative || 0)
+    : 0;
 
   return (
     <motion.div
-      className="bg-slate-800 rounded-2xl shadow-2xl p-6 w-full max-w-md border border-slate-700"
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2 }}
+      className="bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-700"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
     >
-      {/* Profile Picture */}
-      <div className="flex justify-center mb-4">
+      {/* Profile Image - Large */}
+      <div className="relative h-64 w-full">
         <img
           src={profile.profilePicture || "/default-avatar.png"}
           alt={displayName}
-          className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-cyan-500 shadow-xl"
+          className="w-full h-full object-cover"
         />
-      </div>
+        {/* Gradient overlay at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-800 via-transparent to-transparent" />
 
-      {/* Basic Info */}
-      <div className="text-center mb-3">
-        <h2 className="text-xl sm:text-2xl font-bold text-slate-100">{displayName}</h2>
-        {username && <p className="text-sm text-slate-400 mt-1">@{username}</p>}
-      </div>
-
-      {/* Ethos Score & Trust Level */}
-      <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
-        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 text-slate-200 rounded-full text-sm font-medium">
-          <Star className="w-4 h-4 text-yellow-400" />
-          {ethosScore}
-        </span>
-        <span
-          className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 ${colorClass}`}
-        >
-          {trustLevel.charAt(0).toUpperCase() + trustLevel.slice(1)}
-        </span>
-      </div>
-
-      {/* XP Display (if available) */}
-      {xpTotal > 0 && (
-        <div className="flex justify-center mb-4">
-          <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 text-slate-200 rounded-full text-sm font-medium">
-            <Target className="w-4 h-4 text-cyan-400" />
-            {xpTotal.toLocaleString()} XP
-          </span>
-        </div>
-      )}
-
-      {/* Description */}
-      {description && (
-        <div className="mb-4 text-center">
-          <p className="text-sm text-slate-300 line-clamp-3">{description}</p>
-        </div>
-      )}
-
-      {/* Address (shortened) */}
-      <div className="text-center mb-4">
-        <p className="text-xs text-slate-500 font-mono">
-          {profile.address.slice(0, 6)}...{profile.address.slice(-4)}
-        </p>
-      </div>
-
-      {/* Legacy fields (Location, Nationality, Interests) - only show if available */}
-      {(profile.location || profile.nationality) && (
-        <div className="flex justify-center gap-4 mb-4 text-slate-300 text-sm">
-          {profile.location && (
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-cyan-400" />
-              <span>{profile.location}</span>
+        {/* Name and location overlay */}
+        <div className="absolute bottom-4 left-4 right-4">
+          <h2 className="text-2xl font-bold text-white drop-shadow-lg">
+            {displayName}
+          </h2>
+          <div className="flex items-center gap-4 mt-1">
+            {profile.location && (
+              <span className="flex items-center gap-1 text-slate-300 text-sm">
+                <MapPin className="w-4 h-4" />
+                {profile.location}
+              </span>
+            )}
+            <span className="flex items-center gap-1 text-slate-400 text-sm">
+              <Clock className="w-4 h-4" />
+              19h ago
             </span>
-          )}
-          {profile.nationality && (
-            <span className="flex items-center gap-1.5">
-              <Globe className="w-4 h-4 text-cyan-400" />
-              <span>{profile.nationality}</span>
-            </span>
-          )}
+          </div>
         </div>
-      )}
+      </div>
 
-      {/* Interests - only show if available */}
-      {profile.interests && profile.interests.length > 0 && (
-        <div className="mb-4">
-          <h3 className="font-semibold text-slate-200 mb-3 text-center text-sm">
-            Interests
-          </h3>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {profile.interests.map((interest, idx) => (
+      {/* Content */}
+      <div className="p-5">
+        {/* Bio/Description */}
+        {description && (
+          <p className="text-slate-300 text-sm leading-relaxed mb-4 line-clamp-2">
+            {description}
+          </p>
+        )}
+
+        {/* Interests Tags */}
+        {profile.interests && profile.interests.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-5">
+            {profile.interests.slice(0, 4).map((interest, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1 bg-gradient-to-r from-slate-700 to-slate-600 text-slate-200 rounded-full text-xs sm:text-sm border border-slate-600"
+                className="px-3 py-1.5 bg-slate-700/80 text-slate-200 rounded-full text-xs font-medium"
               >
                 {interest}
               </span>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Stats (if available from real Ethos data) */}
-      {profile.stats && (
-        <div className="mt-4 pt-4 border-t border-gray-700">
-          <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            {profile.stats.reviewsReceived !== undefined && (
-              <div>
-                <p className="text-gray-400">Reviews</p>
-                <p className="font-semibold text-gray-200">
-                  {profile.stats.reviewsReceived}
-                </p>
-              </div>
-            )}
-            {profile.stats.vouchesReceived !== undefined && (
-              <div>
-                <p className="text-gray-400">Vouches</p>
-                <p className="font-semibold text-gray-200">
-                  {profile.stats.vouchesReceived}
-                </p>
-              </div>
-            )}
-            {profile.stats.vouchesGiven !== undefined && (
-              <div>
-                <p className="text-gray-400">Given</p>
-                <p className="font-semibold text-gray-200">
-                  {profile.stats.vouchesGiven}
-                </p>
-              </div>
-            )}
+        {/* Stats Row */}
+        <div className="flex justify-between items-center py-4 border-t border-slate-700">
+          <div className="text-center">
+            <p className="text-lg font-bold text-slate-100">{credibilityPercent}%</p>
+            <p className="text-xs text-slate-400">Credibility</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-slate-100">
+              {reviewsReceived}
+            </p>
+            <p className="text-xs text-slate-400">Reviews</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-cyan-400">{ethosScore}</p>
+            <p className="text-xs text-slate-400">Score</p>
           </div>
         </div>
-      )}
+      </div>
     </motion.div>
   );
 }

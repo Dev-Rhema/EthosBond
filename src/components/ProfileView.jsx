@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { X, Star, Target, MapPin, Globe } from "lucide-react";
+import { ArrowLeft, Star, Target, MapPin, Globe } from "lucide-react";
 
 export default function ProfileView({ profile, onClose }) {
   const displayName = profile.displayName || profile.name || "Anonymous";
@@ -47,15 +47,15 @@ export default function ProfileView({ profile, onClose }) {
       className="fixed inset-0 bg-slate-900 z-50 flex flex-col"
     >
       {/* Header */}
-      <div className="bg-slate-800 border-b border-slate-700">
-        <div className="px-4 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-slate-100">Profile</h2>
+      <div className="bg-slate-900 border-b border-slate-800">
+        <div className="px-4 py-3 flex items-center gap-3 max-w-lg mx-auto w-full">
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition p-2 hover:bg-slate-700 rounded-lg"
+            className="p-2 -ml-2 text-slate-400 hover:text-white transition"
           >
-            <X className="w-6 h-6" />
+            <ArrowLeft className="w-5 h-5" />
           </button>
+          <h2 className="text-lg font-semibold text-cyan-400">Profile</h2>
         </div>
       </div>
 

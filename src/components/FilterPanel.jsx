@@ -9,7 +9,6 @@ import {
 } from "../utils/continentsAndCountries";
 import {
   INTERESTS,
-  RELATIONSHIP_TYPES,
   filterInterests,
 } from "../utils/filterOptions";
 
@@ -19,7 +18,6 @@ export default function FilterPanel({ onFilterChange, onClose }) {
     location: "",
     nationality: "",
     continent: "",
-    lookingFor: [],
   });
 
   const [errors, setErrors] = useState({
@@ -128,7 +126,6 @@ export default function FilterPanel({ onFilterChange, onClose }) {
       location: "",
       nationality: "",
       continent: "",
-      lookingFor: [],
     };
     setFilters(emptyFilters);
     setErrors({ nationality: "", continent: "" });
@@ -147,13 +144,6 @@ export default function FilterPanel({ onFilterChange, onClose }) {
       ? filters.interests.filter((i) => i !== interest)
       : [...filters.interests, interest];
     setFilters({ ...filters, interests: updated });
-  };
-
-  const toggleLookingFor = (type) => {
-    const updated = filters.lookingFor.includes(type)
-      ? filters.lookingFor.filter((t) => t !== type)
-      : [...filters.lookingFor, type];
-    setFilters({ ...filters, lookingFor: updated });
   };
 
   const filteredInterestList = filterInterests(interestSearch);
@@ -180,41 +170,6 @@ export default function FilterPanel({ onFilterChange, onClose }) {
           >
             ✕
           </button>
-        </div>
-
-        {/* What are you looking for? */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            What are you looking for? (Select all that apply)
-          </label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {RELATIONSHIP_TYPES.map((type) => (
-              <button
-                key={type.id}
-                onClick={() => toggleLookingFor(type.id)}
-                className={`p-3 rounded-lg border-2 transition text-left ${
-                  filters.lookingFor.includes(type.id)
-                    ? "border-purple-500 bg-purple-50"
-                    : "border-gray-200 hover:border-purple-300"
-                }`}
-              >
-                <div className="flex items-start gap-2">
-                  <span className="text-2xl">{type.icon}</span>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-800">
-                      {type.label}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {type.description}
-                    </div>
-                  </div>
-                  {filters.lookingFor.includes(type.id) && (
-                    <span className="text-purple-500">✓</span>
-                  )}
-                </div>
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Location */}

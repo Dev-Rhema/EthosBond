@@ -174,6 +174,71 @@ class MessageService {
   }
 
   /**
+   * Get last message for a pair
+   */
+  async getLastMessage(pairId) {
+    try {
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("pair_id", pairId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error && error.code !== "PGRST116") throw error; // PGRST116 is "no rows" error
+      return data || null;
+    } catch (error) {
+      console.error("Error getting last message:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Get last message and unread count for multiple pairs
+   */
+  async getLastMessagesForPairs(pairIds, userAddress) {
+    try {
+      const messagesData = {};
+      
+      for (const pairId of pairIds) {
+        const lastMessage = await this.getLastMessage(pairId);
+        const unreadCount = await this.getUnreadCountPerPair(pairId, userAddress);
+        
+        messagesData[pairId] = {
+          lastMessage,
+          unreadCount,
+        };
+      }
+      
+      return messagesData;
+    } catch (error) {
+      console.error("Error getting last messages for pairs:", error);
+      return {};
+    }
+  }
+
+  /**
+   * Get unread message count for a specific pair and user
+   */
+  async getUnreadCountPerPair(pairId, userAddress) {
+    try {
+      const { count, error } = await supabase
+        .from("messages")
+        .select("*", { count: "exact", head: true })
+        .eq("pair_id", pairId)
+        .eq("receiver_address", userAddress.toLowerCase())
+        .eq("is_read", false);
+
+      if (error) throw error;
+      return count || 0;
+    } catch (error) {
+      console.error("Error getting unread count per pair:", error);
+      return 0;
+    }
+  }
+
+  /**
    * Delete all messages for a pair
    */
   async deleteMessagesByPairId(pairId) {

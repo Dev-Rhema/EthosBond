@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { X, Send, Star } from "lucide-react";
+import { ArrowLeft, Send, Star } from "lucide-react";
 import { messageService } from "../services/messageService";
 
 export default function Chat({ bond, currentUser, onClose }) {
@@ -127,29 +127,27 @@ export default function Chat({ bond, currentUser, onClose }) {
       className="fixed inset-0 bg-slate-900 z-50 flex flex-col"
     >
       {/* Header */}
-      <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800">
-        <div className="flex items-center gap-3">
-          <img
-            src={bond.profile?.profilePicture || "/default-avatar.png"}
-            alt={bond.profile?.displayName || bond.profile?.name}
-            className="w-10 h-10 rounded-full border-2 border-cyan-500"
-          />
-          <div>
-            <h3 className="font-semibold text-slate-100">
-              {bond.profile?.displayName || bond.profile?.name}
-            </h3>
-            <p className="text-xs text-slate-400 flex items-center gap-1">
-              <Star className="w-3 h-3 text-yellow-400" />
-              {bond.profile?.ethosScore || 0}
-            </p>
-          </div>
-        </div>
+      <div className="p-4 border-b border-slate-800 flex items-center gap-3 bg-slate-900">
         <button
           onClick={onClose}
-          className="text-slate-300 hover:text-white transition p-1"
+          className="p-2 -ml-2 text-slate-400 hover:text-white transition"
         >
-          <X className="w-6 h-6" />
+          <ArrowLeft className="w-5 h-5" />
         </button>
+        <img
+          src={bond.profile?.profilePicture || "/default-avatar.png"}
+          alt={bond.profile?.displayName || bond.profile?.name}
+          className="w-10 h-10 rounded-full border-2 border-cyan-500"
+        />
+        <div className="flex-1">
+          <h3 className="font-semibold text-slate-100">
+            {bond.profile?.displayName || bond.profile?.name}
+          </h3>
+          <p className="text-xs text-slate-400 flex items-center gap-1">
+            <Star className="w-3 h-3 text-yellow-400" />
+            {bond.profile?.ethosScore || 0}
+          </p>
+        </div>
       </div>
 
       {/* Messages */}

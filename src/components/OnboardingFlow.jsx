@@ -11,8 +11,8 @@ import {
 } from "../utils/continentsAndCountries";
 import {
   INTERESTS,
-  RELATIONSHIP_TYPES,
   GENDER_PREFERENCES,
+  ETHOS_VISIBILITY_LEVELS,
   filterInterests,
 } from "../utils/filterOptions";
 
@@ -30,9 +30,9 @@ export default function OnboardingFlow({ onComplete }) {
     nationality: "",
     continent: "",
     interests: [],
-    lookingFor: [],
     profilePicture: "",
     ethosScore: 0,
+    minVisibleToEthosScore: 0, // Minimum Ethos score required to see this profile
   });
 
   const [errors, setErrors] = useState({
@@ -148,13 +148,6 @@ export default function OnboardingFlow({ onComplete }) {
     setFormData({ ...formData, interests: updated });
   };
 
-  const toggleLookingFor = (type) => {
-    const updated = formData.lookingFor.includes(type)
-      ? formData.lookingFor.filter((t) => t !== type)
-      : [...formData.lookingFor, type];
-    setFormData({ ...formData, lookingFor: updated });
-  };
-
   const validateProfile = () => {
     const newErrors = {
       nationality: "",
@@ -205,11 +198,6 @@ export default function OnboardingFlow({ onComplete }) {
 
     if (formData.interests.length === 0) {
       setError("Please select at least one interest");
-      return;
-    }
-
-    if (formData.lookingFor.length === 0) {
-      setError("Please select what you are looking for");
       return;
     }
 
@@ -529,43 +517,6 @@ export default function OnboardingFlow({ onComplete }) {
                 />
               </div>
 
-              {/* What are you looking for? */}
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">
-                  What are you looking for?{" "}
-                  <span className="text-red-400">*</span> (Select all that
-                  apply)
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                  {RELATIONSHIP_TYPES.map((type) => (
-                    <button
-                      key={type.id}
-                      onClick={() => toggleLookingFor(type.id)}
-                      className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition text-left ${
-                        formData.lookingFor.includes(type.id)
-                          ? "border-cyan-500 bg-slate-700/50"
-                          : "border-slate-600 hover:border-cyan-500/50 bg-slate-700/20"
-                      }`}
-                    >
-                      <div className="flex items-start gap-2 sm:gap-3">
-                        <span className="text-lg">{type.icon}</span>
-                        <div className="flex-1">
-                          <div className="font-semibold text-white text-xs sm:text-sm">
-                            {type.label}
-                          </div>
-                          <div className="text-xs text-slate-400 mt-1">
-                            {type.description}
-                          </div>
-                        </div>
-                        {formData.lookingFor.includes(type.id) && (
-                          <span className="text-cyan-400">✓</span>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Interests */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-3 sm:mb-4">
@@ -642,6 +593,43 @@ export default function OnboardingFlow({ onComplete }) {
                       }`}
                     >
                       {interest}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Profile Visibility Settings */}
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-slate-300 mb-2 sm:mb-3">
+                  Profile Visibility <span className="text-red-400">*</span>
+                </label>
+                <p className="text-xs text-slate-400 mb-3 sm:mb-4">
+                  Choose minimum Ethos score required for others to see your profile
+                </p>
+                <div className="grid grid-cols-1 gap-2 sm:gap-3">
+                  {ETHOS_VISIBILITY_LEVELS.map((level) => (
+                    <button
+                      key={level.id}
+                      onClick={() => handleFieldChange("minVisibleToEthosScore", level.minScore)}
+                      className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition text-left ${
+                        formData.minVisibleToEthosScore === level.minScore
+                          ? "border-cyan-500 bg-slate-700/50"
+                          : "border-slate-600 hover:border-cyan-500/50 bg-slate-700/20"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="font-semibold text-white text-xs sm:text-sm">
+                            {level.label}
+                          </div>
+                          <div className="text-xs text-slate-400 mt-1">
+                            {level.description}
+                          </div>
+                        </div>
+                        {formData.minVisibleToEthosScore === level.minScore && (
+                          <span className="text-cyan-400 ml-2">✓</span>
+                        )}
+                      </div>
                     </button>
                   ))}
                 </div>

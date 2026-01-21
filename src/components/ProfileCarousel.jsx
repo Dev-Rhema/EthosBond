@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfileCard from './ProfileCard';
 import BondButtons from './BondButtons';
@@ -31,24 +31,21 @@ export default function ProfileCarousel({ filters, currentUser, onBondRequest })
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] p-4">
-      {/* Timer Bar */}
-      <div className="w-full max-w-md mb-4 sm:mb-6">
-        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+      {/* Timer Bar - Subtle */}
+      <div className="w-full max-w-sm mb-6">
+        <div className="h-1 bg-slate-700/50 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
+            className="h-full bg-cyan-500"
             initial={{ width: '100%' }}
             animate={{ width: `${(timeLeft / 15) * 100}%` }}
             transition={{ duration: 0.5 }}
           />
         </div>
-        <p className="text-center text-sm text-slate-300 mt-2 font-medium">
-          {timeLeft}s remaining
-        </p>
       </div>
 
       {/* Profile Card */}
       <AnimatePresence mode="wait">
-        {currentProfile && (
+        {currentProfile ? (
           <motion.div
             key={currentProfile.address}
             initial={{ opacity: 0, x: 100 }}
@@ -57,6 +54,17 @@ export default function ProfileCarousel({ filters, currentUser, onBondRequest })
             transition={{ duration: 0.3 }}
           >
             <ProfileCard profile={currentProfile} />
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-slate-800 rounded-3xl shadow-xl w-full max-w-sm h-[520px] flex items-center justify-center border border-slate-700"
+          >
+            <div className="text-center p-6">
+              <p className="text-slate-400 text-lg">No more profiles</p>
+              <p className="text-slate-500 text-sm mt-2">Check back later for new matches</p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
