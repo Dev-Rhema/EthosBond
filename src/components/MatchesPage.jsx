@@ -53,7 +53,7 @@ export default function MatchesPage({
           </h2>
           {bonds.length > 0 && (
             <span className="bg-cyan-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-              {bonds.filter(b => !b.lastMessage).length}
+              {bonds.filter((b) => !b.lastMessage).length}
             </span>
           )}
         </div>
@@ -66,37 +66,39 @@ export default function MatchesPage({
           </div>
         ) : (
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {bonds.filter(b => !b.lastMessage).map((bond, index) => {
-              const profile = bond.profile;
-              if (!profile) return null;
+            {bonds
+              .filter((b) => !b.lastMessage)
+              .map((bond, index) => {
+                const profile = bond.profile;
+                if (!profile) return null;
 
-              return (
-                <motion.button
-                  key={bond.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => onViewProfile(profile)}
-                  className="flex flex-col items-center flex-shrink-0"
-                >
-                  <div className="relative">
-                    <img
-                      src={profile.profilePicture || "/default-avatar.png"}
-                      alt={profile.displayName || profile.name}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-cyan-500"
-                    />
-                    {/* Online indicator */}
-                    <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-900" />
-                  </div>
-                  <p className="text-white text-sm mt-2 font-medium truncate max-w-[70px]">
-                    {profile.displayName || profile.name || "Anonymous"}
-                  </p>
-                  <p className="text-cyan-400 text-xs">
-                    {profile.ethosScore || 0}
-                  </p>
-                </motion.button>
-              );
-            })}
+                return (
+                  <motion.button
+                    key={bond.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => onViewProfile(profile)}
+                    className="flex flex-col items-center flex-shrink-0"
+                  >
+                    <div className="relative">
+                      <img
+                        src={profile.profilePicture || "/default-avatar.png"}
+                        alt={profile.displayName || profile.name}
+                        className="w-16 h-16 rounded-full object-cover border-2 border-cyan-500"
+                      />
+                      {/* Online indicator */}
+                      <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-900" />
+                    </div>
+                    <p className="text-white text-sm mt-2 font-medium truncate max-w-[70px]">
+                      {profile.displayName || profile.name || "Anonymous"}
+                    </p>
+                    <p className="text-cyan-400 text-xs">
+                      {profile.ethosScore || 0}
+                    </p>
+                  </motion.button>
+                );
+              })}
           </div>
         )}
       </div>
