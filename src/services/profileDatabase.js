@@ -132,7 +132,9 @@ class ProfileDatabase {
       const { error: activePairsError } = await supabase
         .from("active_pairs")
         .delete()
-        .or(`user1_address.eq.${lowerAddress},user2_address.eq.${lowerAddress}`);
+        .or(
+          `user1_address.eq.${lowerAddress},user2_address.eq.${lowerAddress}`,
+        );
 
       if (activePairsError) throw activePairsError;
 
@@ -230,7 +232,8 @@ class ProfileDatabase {
       // Filter profiles based on visibility and gender preferences
       profiles = profiles.filter((profile) => {
         // 1. Check if current user meets the profile's visibility requirements
-        const meetsVisibilityRequirement = currentUser.ethosScore >= profile.minVisibleToEthosScore;
+        const meetsVisibilityRequirement =
+          currentUser.ethosScore >= profile.minVisibleToEthosScore;
 
         if (!meetsVisibilityRequirement) {
           return false;
@@ -247,22 +250,26 @@ class ProfileDatabase {
 
         // Extract gender identities and looking-for from preferences
         // Format: 'man-woman' means "man looking for woman"
-        const [currentUserGender, currentUserLookingFor] = currentUserPref.split('-');
-        const [profileGender, profileLookingFor] = profilePref.split('-');
+        const [currentUserGender, currentUserLookingFor] =
+          currentUserPref.split("-");
+        const [profileGender, profileLookingFor] = profilePref.split("-");
 
         // Check if they're a match:
         // Current user should be what the profile is looking for
         // AND profile should be what current user is looking for
 
         const currentUserMatchesProfilePreference =
-          profileLookingFor === 'everyone' ||
+          profileLookingFor === "everyone" ||
           profileLookingFor === currentUserGender;
 
         const profileMatchesCurrentUserPreference =
-          currentUserLookingFor === 'everyone' ||
+          currentUserLookingFor === "everyone" ||
           currentUserLookingFor === profileGender;
 
-        return currentUserMatchesProfilePreference && profileMatchesCurrentUserPreference;
+        return (
+          currentUserMatchesProfilePreference &&
+          profileMatchesCurrentUserPreference
+        );
       });
 
       return profiles;
