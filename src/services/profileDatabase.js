@@ -98,16 +98,68 @@ class ProfileDatabase {
   }
 
   /**
-   * Delete a profile by address
+   * Delete a profile by address and cascade delete all related data
+   * Removes: profile, pair requests (sent/received), active pairs, messages, and blocks
    */
   async deleteProfile(address) {
+    const lowerAddress = address.toLowerCase();
     try {
-      const { error } = await supabase
+      // Delete all messages sent by this user
+      const { error: messagesError } = await supabase
+        .from("messages")
+        .delete()
+        .eq("sender_address", lowerAddress);
+
+      if (messagesError) throw messagesError;
+
+      // Delete all pair requests where user is the sender
+      const { error: sentRequestsError } = await supabase
+        .from("pair_requests")
+        .delete()
+        .eq("from_address", lowerAddress);
+
+      if (sentRequestsError) throw sentRequestsError;
+
+      // Delete all pair requests where user is the receiver
+      const { error: receivedRequestsError } = await supabase
+        .from("pair_requests")
+        .delete()
+        .eq("to_address", lowerAddress);
+
+      if (receivedRequestsError) throw receivedRequestsError;
+
+      // Delete all active pairs involving this user
+      const { error: activePairsError } = await supabase
+        .from("active_pairs")
+        .delete()
+        .or(`user1_address.eq.${lowerAddress},user2_address.eq.${lowerAddress}`);
+
+      if (activePairsError) throw activePairsError;
+
+      // Delete all users blocked by this user
+      const { error: blockingError } = await supabase
+        .from("blocked_users")
+        .delete()
+        .eq("blocker_address", lowerAddress);
+
+      if (blockingError) throw blockingError;
+
+      // Delete all blocks of this user (users who blocked this user)
+      const { error: blockedByError } = await supabase
+        .from("blocked_users")
+        .delete()
+        .eq("blocked_address", lowerAddress);
+
+      if (blockedByError) throw blockedByError;
+
+      // Finally, delete the profile itself
+      const { error: profileError } = await supabase
         .from("profiles")
         .delete()
-        .eq("address", address.toLowerCase());
+        .eq("address", lowerAddress);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
       return true;
     } catch (error) {
       console.error("Error deleting profile:", error);
